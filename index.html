@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ElectroShop - Siêu Thị Điện Tử Uy Tín</title>
+
+  <!-- CSS NỘI TUYẾN -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 2em;
+      background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    /* NAV */
+    nav {
+      background-color: #000;
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 12px 0;
+      display: block;
+    }
+
+    nav ul li a:hover,
+    nav ul li a.active {
+      color: #ff6b00;
+      border-bottom: 2px solid #ff6b00;
+    }
+
+    /* BANNER */
+    .banner {
+      background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .banner h2 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .banner p {
+      font-size: 18px;
+      opacity: 0.95;
+    }
+
+    /* PRODUCTS */
+    .products {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .products h2 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #1a1a1a;
+    }
+
+    .product-list {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 25px;
+      margin-top: 25px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      width: 250px;
+      padding: 25px;
+      transition: transform 0.3s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-image {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    .price {
+      color: #ff6b00;
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin-top: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 107, 0, 0.3);
+    }
+
+    /* FOOTER */
+    footer {
+      background: #fff;
+      text-align: center;
+      padding: 25px;
+      margin-top: 50px;
+      color: #666;
+      border-top: 1px solid #eee;
+    }
+
+    footer a {
+      color: #ff6b00;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .product-list {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .banner {
+        padding: 40px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1>⚡ ElectroShop</h1>
+    <p>Siêu thị điện tử trực tuyến – Uy tín, nhanh chóng, giá tốt!</p>
+  </header>
+
+  <!-- NAVBAR -->
+  <nav>
+    <ul>
+      <li><a href="index.html" class="active">Trang chủ</a></li>
+      <li><a href="Category.html">Sản phẩm</a></li>
+      <li><a href="cart.html">Giỏ hàng</a></li>
+      <li><a href="checkout.html">Thanh toán</a></li>
+      <li><a href="contact.html">Liên hệ</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <section class="banner">
+      <h2>Nâng tầm trải nghiệm – Đẳng cấp trong từng sản phẩm.</h2>
+      <p>Mua ngay hôm nay để nhận ưu đãi siêu hấp dẫn!</p>
+    </section>
+
+    <section class="products">
+      <h2>Sản phẩm nổi bật</h2>
+      <div class="product-list">
+        <div class="product-card">
+          <div class="product-image">📱</div>
+          <h3>iPhone 15 Pro Max</h3>
+          <p>Giá: <span class="price">33.990.000₫</span></p>
+          <button class="btn" data-product-id="1">Thêm vào giỏ</button>
+        </div>
+
+        <div class="product-card">
+          <div class="product-image">💻</div>
+          <h3>MacBook Air M3</h3>
+          <p>Giá: <span class="price">29.490.000₫</span></p>
+          <button class="btn" data-product-id="51">Thêm vào giỏ</button>
+        </div>
+
+        <div class="product-card">
+          <div class="product-image">🎧</div>
+          <h3>AirPods Pro 2</h3>
+          <p>Giá: <span class="price">5.990.000₫</span></p>
+          <button class="btn" data-product-id="83">Thêm vào giỏ</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 ElectroShop. All rights reserved.</p>
+    <p>Liên hệ: <a href="mailto:hotro@electroshop.vn">hotro@electroshop.vn</a></p>
+  </footer>
+
+  <script>
+    document.querySelectorAll(".btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        alert("Sản phẩm đã được thêm vào giỏ hàng 🛒");
+      });
+    });
+  </script>
+  <script src="js/Product.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đơn hàng của tôi - ElectroShop</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+    }
+
+    .top-bar {
+      background: #000;
+      color: white;
+      padding: 8px 0;
+      font-size: 13px;
+    }
+
+    .top-bar .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .top-bar a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      padding: 20px 0;
+    }
+
+    .header-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .breadcrumb {
+      background: white;
+      padding: 15px 0;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .breadcrumb a {
+      color: #666;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+
+    .breadcrumb span {
+      color: #000;
+      font-weight: 600;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-btn {
+      padding: 12px 25px;
+      border: 2px solid #ddd;
+      background: white;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .tab-btn:hover {
+      border-color: #ff6b00;
+      color: #ff6b00;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+      color: white;
+      border-color: #ff6b00;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f5f5f5;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .order-id {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1a1a1a;
+    }
+
+    .order-date {
+      font-size: 14px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .order-status {
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-confirmed {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .status-shipping {
+      background: #cce5ff;
+      color: #004085;
+    }
+
+    .status-delivered {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-cancelled {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .order-items {
+      margin-bottom: 20px;
+    }
+
+    .order-item {
+      display: flex;
+      gap: 20px;
+      padding: 15px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .order-item:last-child {
+      border-bottom: none;
+    }
+
+    .item-image {
+      width: 80px;
+      height: 80px;
+      background: #f8f8f8;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 35px;
+    }
+
+    .item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 15px;
+    }
+
+    .item-specs {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .item-qty {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .item-price {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ff6b00;
+      text-align: right;
+    }
+
+    .order-summary {
+      background: #f8f8f8;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .summary-row.total {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 2px solid #ddd;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .summary-row.total .amount {
+      color: #ff6b00;
+      font-size: 22px;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #ff6b00;
+      border: 2px solid #ff6b00;
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      background: white;
+      border-radius: 15px;
+      display: none;
+    }
+
+    .empty-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .order-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .item-price {
+        text-align: left;
+      }
+
+      .order-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-bar">
+    <div class="container">
+      <div>📞 Hotline: 0123456789</div>
+      <div><a href="my-account.html">Tài khoản</a></div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container header-main">
+      <div class="logo" onclick="window.location.href='index.html'">
+        <div class="logo-icon">⚡</div>
+        <div class="logo-text">ElectroShop</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="breadcrumb">
+    <div class="container">
+      <a href="index.html">Trang chủ</a> /
+      <a href="my-account.html">Tài khoản</a> / <span>Đơn hàng của tôi</span>
+    </div>
+  </div>
+
+  <main class="container" style="margin-bottom: 50px;">
+    <h1 class="page-title">📦 Đơn hàng của tôi</h1>
+
+    <div class="filter-tabs">
+      <button class="tab-btn" onclick="filterOrders('all')">Tất cả</button>
+      <button class="tab-btn" onclick="filterOrders('pending')">Chờ xác nhận</button>
+      <button class="tab-btn" onclick="filterOrders('confirmed')">Đã xác nhận</button>
+      <button class="tab-btn" onclick="filterOrders('shipping')">Đang giao</button>
+      <button class="tab-btn" onclick="filterOrders('delivered')">Đã giao</button>
+      <button class="tab-btn" onclick="filterOrders('cancelled')">Đã hủy</button>
+    </div>
+
+    <div id="ordersList">
+      </div>
+
+    <div id="emptyState" class="empty-state">
+      <div class="empty-icon">🛒</div>
+      <h2>Bạn chưa có đơn hàng nào</h2>
+    </div>
+  </main>
+
+  <script>
+    const BASE_URL = 'http://localhost:5000/api';
+    const API_URL = `${BASE_URL}/orders`;
+
+    function mapStatus(feStatus) {
+        const statusMap = {
+            'pending': 'CHỜ XÁC NHẬN',
+            'confirmed': 'Đã xác nhận',
+            'shipping': 'Đang giao',
+            'delivered': 'Đã giao',
+            'cancelled': 'Đã hủy',
+        };
+        return statusMap[feStatus] || feStatus;
+    }
+
+    function getStatusClass(status) {
+        const normalizedStatus = status ? status.toUpperCase() : '';
+        const classes = {
+            'CHỜ XÁC NHẬN': 'status-pending',
+            'ĐÃ XÁC NHẬN': 'status-confirmed',
+            'ĐANG GIAO': 'status-shipping',
+            'ĐÃ GIAO': 'status-delivered',
+            'ĐÃ HỦY': 'status-cancelled',
+        };
+
+        const key = Object.keys(classes).find(k => normalizedStatus.includes(k));
+
+        return classes[key] || 'status-pending';
+    }
+
+    function getDisplayStatus(status) {
+        switch (status) {
+            case 'CHỜ XÁC NHẬN':
+                return '⏳ Chờ xác nhận';
+            case 'Đã xác nhận':
+                return 'Đã xác nhận';
+            case 'Đang giao':
+                return '🚚 Đang giao hàng';
+            case 'Đã giao':
+                return '✅ Đã giao hàng';
+            case 'Đã hủy':
+                return '❌ Đã hủy';
+            default:
+                return status;
+        }
+    }
+
+    async function fetchWithAuth(url, method = 'GET', data = null) {
+        const token = localStorage.getItem('userToken');
+        if (!token) {
+            alert('Phiên làm việc hết hạn. Vui lòng đăng nhập lại.');
+            window.location.href = 'login.html';
+            throw new Error('No token found');
+        }
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        };
+        const config = { method, headers, };
+        if (data) { config.body = JSON.stringify(data); }
+
+        const response = await fetch(url, config);
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.message || 'Lỗi hệ thống');
+        }
+        return result;
+    }
+
+    function formatCurrency(amount) {
+        return amount ?
+            amount.toLocaleString('vi-VN') + '₫' : '0₫';
+    }
+
+    function renderOrders(orders) {
+        const ordersList = document.getElementById('ordersList');
+        const totalCount = orders.length;
+
+        if (totalCount === 0) {
+            document.getElementById('emptyState').style.display = 'block';
+            ordersList.innerHTML = '';
+            return;
+        }
+
+        document.getElementById('emptyState').style.display = 'none';
+        ordersList.innerHTML = orders.map(order => {
+            const orderDate = new Date(order.createdAt).toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            const statusClass = getStatusClass(order.status);
+            // Chỉ cho phép hủy khi trạng thái là 'CHỜ XÁC NHẬN'
+            const canCancel = order.status === 'CHỜ XÁC NHẬN';
+
+            const firstItem = order.items[0];
+            const itemsCount = order.items.length;
+            const displayStatus = getDisplayStatus(order.status);
+            
+            // Xử lý đường dẫn hình ảnh (giả định FE không thể truy cập đường dẫn tuyệt đối C:\Users\...)
+            // Cần đảm bảo hình ảnh được cung cấp qua đường dẫn tương đối hoặc URL công khai.
+            const imageUrl = firstItem.image; // Sử dụng đường dẫn trả về từ Backend
+
+            return `
+                <div class="order-card" data-status="${order.status}">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">Đơn hàng #${order.orderId}</div>
+                            <div class="order-date">Ngày đặt: ${orderDate}</div>
+                        </div>
+                        <div class="order-status ${statusClass}">
+                            ${displayStatus}
+                        </div>
+                    </div>
+                    <div class="order-items">
+                        <div class="order-item">
+                            <div class="item-image">
+                                <img src="${imageUrl}" alt="${firstItem.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
+                            </div>
+                            <div class="item-details">
+                                <div class="item-name">${firstItem.name} ${itemsCount > 1 ? `(+${itemsCount - 1} sản phẩm khác)` : ''}</div>
+                                <div class="item-qty">Số lượng: ${firstItem.quantity}</div>
+                            </div>
+                            <div class="item-price">${formatCurrency(firstItem.price * firstItem.quantity)}</div>
+                        </div>
+                    </div>
+                    <div class="order-summary">
+                        <div class="summary-row total">
+                            <span>Tổng cộng:</span>
+                            <span class="amount">${formatCurrency(order.totalAmount)}</span>
+                        </div>
+                    </div>
+                    <div class="order-actions">
+                        ${canCancel ? `<button class="btn btn-danger" onclick="cancelOrder('${order.orderId}')">Hủy đơn</button>` : ''}
+                        <button class="btn btn-secondary" onclick="contactSupport()">Liên hệ hỗ trợ</button>
+                        <button class="btn btn-primary" onclick="viewInvoice('${order.orderId}')">Xem chi tiết</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function filterOrders(status) {
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(tab => {
+            const tabStatus = tab.getAttribute('onclick').match(/'([^']+)'/);
+            if (tabStatus && tabStatus[1] === status) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+
+        const beStatus = mapStatus(status);
+
+        try {
+            const result = await fetchWithAuth(`${API_URL}/history?status=${beStatus}`);
+            renderOrders(result.orders);
+        } catch (error) {
+            alert('❌ Lỗi tải đơn hàng: ' + error.message);
+            renderOrders([]);
+        }
+    }
+
+    async function cancelOrder(orderId) {
+        if (!confirm(`Bạn có chắc muốn hủy đơn hàng #${orderId}? Thao tác này không thể hoàn tác.`)) return;
+        try {
+            const result = await fetchWithAuth(`${API_URL}/${orderId}/cancel`, 'PUT');
+            alert(result.message);
+
+            const activeTab = document.querySelector('.tab-btn.active').getAttribute('onclick').match(/'([^']+)'/)[1];
+            filterOrders(activeTab);
+        } catch (error) {
+            alert('❌ Lỗi hủy đơn hàng: ' + error.message);
+        }
+    }
+
+    function viewInvoice(orderId) {
+        window.location.href = `invoice.html?orderId=${orderId}`;
+    }
+
+    function contactSupport() {
+        alert("Liên hệ hỗ trợ qua hotline 1900.xxxx hoặc email: support@electroshop.vn");
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialStatus = 'all';
+
+        const initialTab = document.querySelector(`[onclick="filterOrders('${initialStatus}')"]`);
+        if (initialTab) {
+            initialTab.classList.add('active');
+        }
+
+        filterOrders(initialStatus);
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - ElectroShop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-banner {
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-banner::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+
+        .login-banner::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -50px;
+            left: -50px;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .banner-logo {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin: 0 auto 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .banner-title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .banner-subtitle {
+            font-size: 16px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .banner-features {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .login-form-section {
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: #ff6b00;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #999;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 15px 14px 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ff6b00;
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #999;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .remember-me input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: #ff6b00;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.4);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 25px 0;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .social-btn {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .social-btn:hover {
+            border-color: #ff6b00;
+            background: #fff5e6;
+        }
+
+        .social-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .form-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .form-footer a {
+            color: #ff6b00;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: #ff6b00;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-home a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                grid-template-columns: 1fr;
+            }
+
+            .login-banner {
+                padding: 40px 30px;
+            }
+
+            .banner-features {
+                display: none;
+            }
+
+            .login-form-section {
+                padding: 40px 30px;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-banner">
+            <div class="banner-content">
+                <div class="banner-logo">⚡</div>
+                <h1 class="banner-title">ElectroShop</h1>
+                <p class="banner-subtitle">
+                    Siêu thị điện tử uy tín hàng đầu Việt Nam<br>
+                    Sản phẩm chính hãng - Giá tốt nhất
+                </p>
+                <div class="banner-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">✅</div>
+                        <div>
+                            <strong>Hàng chính hãng 100%</strong><br>
+                            <span style="font-size: 14px; opacity: 0.9;">Bảo hành toàn quốc</span>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🚚</div>
+                        <div>
+                            <strong>Giao hàng miễn phí</strong><br>
+                            <span style="font-size: 14px; opacity: 0.9;">Đơn từ 500.000₫</span>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💳</div>
+                        <div>
+                            <strong>Trả góp 0%</strong><br>
+                            <span style="font-size: 14px; opacity: 0.9;">Không cần thẻ tín dụng</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-form-section">
+            <div class="form-header">
+                <h2 class="form-title">Chào mừng trở lại! 👋</h2>
+                <p class="form-subtitle">Đăng nhập để tiếp tục mua sắm</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Đăng nhập</button>
+                <button class="tab-btn" onclick="switchTab('register')">Đăng ký</button>
+            </div>
+
+            <div id="login-form" class="form-content active">
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Email hoặc số điện thoại</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon"></span>
+                            <input type="text" class="form-input" placeholder="example@gmail.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Mật khẩu</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon"></span>
+                            <input type="password" class="form-input" id="loginPassword" placeholder="••••••••"
+                                required>
+                            <button type="button" class="password-toggle"
+                                onclick="togglePassword('loginPassword')">👁️</button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox">
+                            <span>Ghi nhớ đăng nhập</span>
+                        </label>
+                        <a href="#" class="forgot-password">Quên mật khẩu?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Đăng nhập</button>
+                </form>
+
+                <div class="divider">Hoặc đăng nhập với</div>
+
+                <div class="social-login">
+                    <button class="social-btn" onclick="loginWithGoogle()">
+                        🔵 Google
+                    </button>
+                    <button class="social-btn" onclick="loginWithFacebook()">
+                        🟦 Facebook
+                    </button>
+                </div>
+
+                <div class="form-footer">
+                    Chưa có tài khoản? <a href="#" onclick="switchTab('register')">Đăng ký ngay</a>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="form-content">
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label">Họ và tên</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon"></span>
+                            <input type="text" class="form-input" placeholder="Nguyễn Văn A" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon"></span>
+                            <input type="email" class="form-input" placeholder="example@gmail.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Số điện thoại</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon"></span>
+                            <input type="tel" class="form-input" placeholder="0901234567" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Mật khẩu</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon"></span>
+                            <input type="password" class="form-input" id="registerPassword" placeholder="••••••••"
+                                required>
+                            <button type="button" class="password-toggle"
+                                onclick="togglePassword('registerPassword')">👁️</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Xác nhận mật khẩu</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon"></span>
+                            <input type="password" class="form-input" id="confirmPassword" placeholder="••••••••"
+                                required>
+                            <button type="button" class="password-toggle"
+                                onclick="togglePassword('confirmPassword')">👁️</button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" required>
+                            <span>Tôi đồng ý với <a href="#" style="color: #ff6b00;">Điều khoản</a></span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Đăng ký</button>
+                </form>
+
+                <div class="divider">Hoặc đăng ký với</div>
+
+                <div class="social-login">
+                    <button class="social-btn" onclick="loginWithGoogle()">
+                        🔵 Google
+                    </button>
+                    <button class="social-btn" onclick="loginWithFacebook()">
+                        🟦 Facebook
+                    </button>
+                </div>
+
+                <div class="form-footer">
+                    Đã có tài khoản? <a href="#" onclick="switchTab('login')">Đăng nhập</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:5000/api';
+
+        async function postData(url = '', data = {}) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Lỗi không xác định.');
+                }
+                return response.json();
+            } catch (error) {
+                console.error('API Error:', error.message);
+                throw error;
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.form-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName + '-form').classList.add('active');
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = event.target;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const usernameInput = event.target.querySelector('input[type="text"]').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!usernameInput || !password) {
+                alert(' Vui lòng nhập email và mật khẩu.');
+                return;
+            }
+
+            try {
+                const result = await postData(`${BASE_URL}/auth/login`, { username: usernameInput, password: password });
+
+                localStorage.setItem('userToken', result.token);
+                localStorage.setItem('userName', result.user.name);
+                localStorage.setItem('userRole', result.user.role);
+
+                alert(`✅ Đăng nhập thành công! Chào mừng ${result.user.name} trở lại.`);
+
+                if (result.user.role === 'admin') {
+                    window.location.replace('admin.html');
+                } else {
+                    window.location.replace('index.html');
+                }
+
+            } catch (error) {
+                alert('❌ Đăng nhập thất bại: ' + error.message);
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const name = document.querySelector('input[placeholder="Nguyễn Văn A"]').value;
+            const email = document.querySelector('#register-form input[type="email"]').value;
+            const phone = document.querySelector('#register-form input[type="tel"]').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert(' Mật khẩu xác nhận không khớp!');
+                return;
+            }
+
+            try {
+                const result = await postData(`${BASE_URL}/auth/register`, { name, email, phone, password });
+
+                alert(' Đăng ký thành công! Chào mừng bạn đến với ElectroShop.');
+                window.location.replace('index.html');
+
+            } catch (error) {
+                alert('❌ Đăng ký thất bại: ' + error.message);
+            }
+        }
+
+        function loginWithGoogle() {
+            alert('🔵 Đăng nhập với Google (Tính năng đang phát triển)');
+        }
+
+        function loginWithFacebook() {
+            alert('🟦 Đăng nhập với Facebook (Tính năng đang phát triển)');
+        }
+    </script>
+</body>
+</html>

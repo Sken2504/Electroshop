@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa đơn #DH123456 - ElectroShop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .success-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .invoice-container {
+            max-width: 900px;
+            margin: -30px auto 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 30px;
+            color: #4CAF50;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .invoice-meta p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .customer-info h2,
+        .invoice-details h2 {
+            font-size: 20px;
+            color: #1a1a1a;
+            border-left: 4px solid #4CAF50;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+
+        .customer-info-details p {
+            margin: 5px 0;
+            font-size: 15px;
+        }
+
+        .invoice-details {
+            margin-top: 30px;
+        }
+
+        .invoice-item-list {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .invoice-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            background: #fff;
+        }
+
+        .invoice-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .item-qty,
+        .item-price {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .item-subtotal {
+            font-weight: 700;
+            font-size: 16px;
+            color: #1a1a1a;
+            text-align: right;
+            width: 150px;
+        }
+
+        .invoice-summary {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 30px;
+        }
+
+        .summary-box {
+            width: 350px;
+            background: #fafafa;
+            border: 1px solid #eee;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 15px;
+        }
+
+        .summary-row.total {
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+
+        .summary-row .amount {
+            font-weight: 700;
+        }
+
+        .invoice-footer {
+            border-top: 2px solid #eee;
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .payment-info {
+            width: 45%;
+        }
+
+        .invoice-notes {
+            width: 45%;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .payment-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .payment-details strong {
+            color: #4CAF50;
+        }
+
+        .invoice-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+
+        .invoice-actions .btn {
+            padding: 12px 25px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .invoice-container {
+                padding: 20px;
+            }
+
+            .invoice-header {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .invoice-meta {
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            .invoice-footer {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .payment-info,
+            .invoice-notes {
+                width: 100%;
+            }
+
+            .item-subtotal {
+                width: auto;
+            }
+
+            .invoice-actions {
+                position: static;
+                box-shadow: none;
+                padding: 0;
+                margin-top: 30px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .success-header,
+            .invoice-actions {
+                display: none;
+            }
+
+            .invoice-container {
+                margin: 0 auto;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="success-header">
+        <div class="success-icon">✅</div>
+        <h1 class="success-title">Đặt hàng thành công!</h1>
+        <p class="success-message">Cảm ơn quý khách đã tin tưởng ElectroShop. Chi tiết đơn hàng:</p>
+    </div>
+
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                <div class="logo-text">ElectroShop</div>
+            </div>
+            <div class="invoice-meta">
+                <p>Mã đơn hàng: <strong id="invoiceId"></strong></p>
+                <p>Ngày: <span id="invoiceDate"></span></p>
+                <div class="status-badge">
+                    Trạng thái: <strong id="invoiceStatus"></strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="customer-info">
+            <h2>Thông tin nhận hàng</h2>
+            <div class="customer-info-details">
+                <p>Họ tên: <strong id="customerName"></strong></p>
+                <p>Địa chỉ: <span id="customerAddress"></span></p>
+                <p>Email: <span id="customerEmail"></span></p>
+                <p>SĐT: <span id="customerPhone"></span></p>
+            </div>
+        </div>
+
+        <div class="invoice-details">
+            <h2>Chi tiết đơn hàng</h2>
+            <div class="invoice-item-list" id="orderItemsList">
+            </div>
+        </div>
+
+        <div class="invoice-summary">
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>Tạm tính:</span>
+                    <span id="summarySubtotal"></span>
+                </div>
+                <div class="summary-row">
+                    <span>Vận chuyển:</span>
+                    <span id="summaryShipping"></span>
+                </div>
+                <div class="summary-row">
+                    <span>Giảm giá:</span>
+                    <span style="color: #ff0000;" id="summaryDiscount"></span>
+                </div>
+                <div class="summary-row">
+                    <span>VAT (10%):</span>
+                    <span id="summaryVAT"></span>
+                </div>
+                <div class="summary-row total">
+                    <span>Tổng cộng:</span>
+                    <span class="amount" id="summaryTotal"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="invoice-footer">
+            <div class="payment-info">
+                <div class="payment-title">Phương thức thanh toán</div>
+                <div class="payment-details">
+                    <strong id="paymentMethodTitle"></strong><br>
+                    <span id="paymentMethodDetails"></span>
+                </div>
+            </div>
+
+            <div class="invoice-notes">
+                <strong>Lưu ý:</strong><br>
+                - Đơn hàng sẽ được xử lý và giao trong vòng 2-3 ngày làm việc.<br>
+                - Quý khách vui lòng kiểm tra kỹ sản phẩm trước khi thanh toán.<br>
+                - Mọi thắc mắc xin liên hệ: 0123456789 hoặc support@electroshop.vn<br>
+                - Sản phẩm được bảo hành chính hãng 12 tháng.
+            </div>
+
+            <div class="invoice-actions">
+                <button class="btn btn-primary" onclick="window.print()">
+                    In hóa đơn
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+                    Tiếp tục mua sắm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:5000/api';
+
+        function formatCurrency(amount) {
+            if (amount === 0) return 'Miễn phí';
+            return amount.toLocaleString('vi-VN') + '₫';
+        }
+
+        function getPaymentDescription(method) {
+            switch (method) {
+                case 'cod':
+                    return {
+                        title: 'Thanh toán khi nhận hàng (COD)',
+                        details: 'Quý khách vui lòng thanh toán bằng tiền mặt cho nhân viên giao hàng khi nhận sản phẩm.'
+                    };
+                case 'bank':
+                    return {
+                        title: 'Chuyển khoản Ngân hàng (VietQR)',
+                        details: 'Quý khách đã thực hiện chuyển khoản. Đơn hàng sẽ được xác nhận sau khi ngân hàng báo có.'
+                    };
+                case 'vnpay':
+                    return {
+                        title: 'Thanh toán VNPAY',
+                        details: 'Giao dịch thanh toán VNPAY đã hoàn tất. Đơn hàng đang được xử lý.'
+                    };
+                case 'tra_gop':
+                    return {
+                        title: 'Trả góp 0% qua thẻ tín dụng',
+                        details: 'Đơn hàng trả góp đang chờ được duyệt bởi ngân hàng. Chúng tôi sẽ liên hệ trong 24 giờ.'
+                    };
+                default:
+                    return {
+                        title: 'Phương thức thanh toán khác',
+                        details: 'Thông tin phương thức thanh toán đang được cập nhật.'
+                    };
+            }
+        }
+
+        async function fetchWithAuth(url, method = 'GET', data = null) {
+            const token = localStorage.getItem('userToken');
+            if (!token) {
+                alert('Vui lòng đăng nhập để xem hóa đơn.');
+                window.location.replace('login.html');
+                throw new Error('No token found');
+            }
+
+            const headers = {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            };
+
+            const config = { method, headers, };
+            if (data) { config.body = JSON.stringify(data); }
+
+            const response = await fetch(url, config);
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Lỗi hệ thống');
+            }
+            return result;
+        }
+
+        function getOrderIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('orderId');
+        }
+
+        function renderInvoice(order) {
+            if (!order) {
+                document.querySelector('.invoice-container').innerHTML = `<p style="text-align: center; padding: 50px;">Không tìm thấy thông tin đơn hàng.</p>`;
+                return;
+            }
+
+            // 1. Cập nhật Tiêu đề & Trạng thái
+            document.title = `Hóa đơn #${order.orderId} - ElectroShop`;
+            document.getElementById('invoiceId').textContent = '#' + order.orderId;
+            document.getElementById('invoiceDate').textContent = new Date(order.createdAt).toLocaleDateString('vi-VN');
+            document.getElementById('invoiceStatus').textContent = order.status.toUpperCase();
+
+            // 2. Cập nhật Thông tin Khách hàng
+            document.getElementById('customerName').textContent = order.customerName;
+            document.getElementById('customerAddress').textContent = order.address;
+            document.getElementById('customerEmail').textContent = order.email;
+            document.getElementById('customerPhone').textContent = order.phone;
+
+            // 3. Render Danh sách sản phẩm
+            const orderItemsList = document.getElementById('orderItemsList');
+            orderItemsList.innerHTML = order.items.map(item => `
+        <div class="invoice-item">
+            <div class="item-image">
+                <img src="${item.image}" alt="${item.name}">
+            </div>
+            <div class="item-details">
+                <div class="item-name">${item.name}</div>
+                <div class="item-qty">Số lượng: ${item.quantity}</div>
+                <div class="item-price">${formatCurrency(item.price)}</div>
+            </div>
+            <div class="item-subtotal">${formatCurrency(item.price * item.quantity)}</div>
+        </div>
+    `).join('');
+
+            // 4. Cập nhật Tóm tắt đơn hàng
+            document.getElementById('summarySubtotal').textContent = formatCurrency(order.subtotal);
+            document.getElementById('summaryShipping').textContent = formatCurrency(order.shippingFee);
+            document.getElementById('summaryDiscount').textContent = '-' + formatCurrency(order.discount);
+
+            const calculatedVAT = order.totalAmount - (order.subtotal - order.discount + order.shippingFee);
+            document.getElementById('summaryVAT').textContent = formatCurrency(calculatedVAT);
+            document.getElementById('summaryTotal').textContent = formatCurrency(order.totalAmount);
+
+            // 5. Cập nhật Phương thức thanh toán
+            const paymentInfo = getPaymentDescription(order.paymentMethod);
+            document.getElementById('paymentMethodTitle').textContent = paymentInfo.title;
+            document.getElementById('paymentMethodDetails').textContent = paymentInfo.details;
+        }
+
+        async function loadInvoiceData() {
+            const orderId = getOrderIdFromUrl();
+            if (!orderId) {
+                alert('Không tìm thấy mã đơn hàng. Đang chuyển hướng về trang lịch sử đơn hàng.');
+                window.location.replace('order-history.html');
+                return;
+            }
+
+            try {
+                const result = await fetchWithAuth(`${BASE_URL}/orders/${orderId}`, 'GET');
+                renderInvoice(result.order);
+
+            } catch (error) {
+                alert('❌ Lỗi tải hóa đơn: ' + error.message);
+                console.error('Lỗi tải hóa đơn:', error);
+                window.location.replace('order-history.html');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            loadInvoiceData();
+        });
+    </script>
+</body>
+</html>

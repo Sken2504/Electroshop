@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - ElectroShop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .top-bar {
+            background: #000;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+
+        .top-bar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .breadcrumb {
+            background: white;
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        .breadcrumb a:hover {
+            color: #ff6b00;
+        }
+
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+
+        .cart-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .cart-items {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr auto;
+            gap: 20px;
+            padding: 20px;
+            border-bottom: 2px solid #f5f5f5;
+            align-items: center;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 100px;
+            height: 100px;
+            background: #f8f8f8;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .item-specs {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .item-price {
+            font-size: 20px;
+            color: #ff6b00;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: #f5f5f5;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background: #ff6b00;
+            color: white;
+        }
+
+        .quantity-input {
+            width: 50px;
+            height: 35px;
+            border: none;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .item-total {
+            text-align: right;
+        }
+
+        .item-total-price {
+            font-size: 24px;
+            color: #ff6b00;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            color: #ff0000;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+
+        .btn-remove:hover {
+            color: #cc0000;
+        }
+
+        .cart-summary {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f5f5f5;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .summary-row.total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f5f5f5;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .summary-row.total .amount {
+            color: #ff6b00;
+            font-size: 28px;
+        }
+
+        .promo-code {
+            margin: 20px 0;
+        }
+
+        .promo-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .promo-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .btn-apply {
+            padding: 12px 20px;
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-apply:hover {
+            background: #ff6b00;
+            color: white;
+            border-color: #ff6b00;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.4);
+        }
+
+        .btn-continue {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            color: #ff6b00;
+            border: 2px solid #ff6b00;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-continue:hover {
+            background: #f5f5f5;
+        }
+
+        .empty-cart {
+            background: white;
+            border-radius: 15px;
+            padding: 60px;
+            text-align: center;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-cart-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .empty-cart p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .shipping-note {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .shipping-note div {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .shipping-note div:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-item {
+                grid-template-columns: 80px 1fr;
+                gap: 15px;
+            }
+
+            .item-total {
+                grid-column: 1 / -1;
+                text-align: left;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="container">
+            <span id="authStatusArea">
+            </span>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-main">
+                <div class="logo" onclick="window.location.href='index.html'">
+                    <div class="logo-icon">⚡</div>
+                    <div class="logo-text">ElectroShop</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Trang chủ</a> /
+            <span>Giỏ hàng</span>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="cart-container" id="cartContainer">
+            <div class="cart-items" id="cartItems">
+            </div>
+
+            <div class="cart-summary">
+                <h3 class="summary-title">Tóm tắt đơn hàng</h3>
+
+                <div class="summary-row">
+                    <span>Tạm tính (<span id="itemCount">0</span> sản phẩm):</span>
+                    <span id="subtotal">0₫</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Phí vận chuyển:</span>
+                    <span id="shipping">Miễn phí</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Giảm giá:</span>
+                    <span id="discount" style="color: #ff0000;">-0₫</span>
+                </div>
+
+                <div class="promo-code">
+                    <label style="font-weight: 600; margin-bottom: 10px; display: block;">Mã giảm giá:</label>
+                    <div class="promo-input">
+                        <input type="text" placeholder="Nhập mã giảm giá" id="promoCode">
+                        <button class="btn-apply" onclick="applyPromo()">Áp dụng</button>
+                    </div>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Tổng cộng:</span>
+                    <span class="amount" id="totalAmount">0₫</span>
+                </div>
+
+                <button class="btn-checkout" onclick="checkout()">Tiến hành thanh toán</button>
+                <button class="btn-continue" onclick="window.location.href='index.html'">Tiếp tục mua hàng</button>
+
+                <div class="shipping-note">
+                    <div>Miễn phí vận chuyển đơn từ 500.000₫</div>
+                    <div>Giao hàng toàn quốc trong 2-3 ngày</div>
+                    <div>Đổi trả miễn phí trong 30 ngày</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const BASE_URL = 'http://localhost:5000/api';
+
+        function formatCurrency(amount) {
+            return amount.toLocaleString('vi-VN') + '₫';
+        }
+
+        async function fetchWithAuth(url, method = 'GET', data = null) {
+            const token = localStorage.getItem('userToken');
+            if (!token) {
+                alert('Vui lòng đăng nhập để xem giỏ hàng.');
+                window.location.replace('login.html');
+                throw new Error('No token found');
+            }
+
+            const headers = {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            };
+
+            const config = { method, headers, };
+            if (data) { config.body = JSON.stringify(data); }
+
+            const response = await fetch(url, config);
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Lỗi hệ thống');
+            }
+            return result;
+        }
+
+        function renderEmptyCart() {
+            const cartContainer = document.getElementById('cartContainer');
+            if (cartContainer) {
+                cartContainer.innerHTML = `
+            <div class="empty-cart" style="grid-column: 1 / -1;">
+                <div class="empty-cart-icon">🛒</div>
+                <h2>Giỏ hàng trống</h2>
+                <p>Bạn chưa có sản phẩm nào trong giỏ hàng</p>
+                <button class="btn-checkout" onclick="window.location.href='index.html'">
+                    Tiếp tục mua sắm
+                </button>
+            </div>
+        `;
+            }
+        }
+
+        function renderCartItems(items) {
+            const cartItemsContainer = document.getElementById('cartItems');
+            const cartContainer = document.getElementById('cartContainer');
+
+            if (!cartItemsContainer || !cartContainer) return;
+
+            if (items.length === 0) {
+                const summaryHtml = document.querySelector('.cart-summary')?.outerHTML || '';
+                cartContainer.innerHTML = `
+            <div class="cart-items" id="cartItems"></div>
+            ${summaryHtml}
+        `;
+                renderEmptyCart();
+                return;
+            }
+
+            cartItemsContainer.innerHTML = items.map(item => `
+        <div class="cart-item">
+            <div class="item-image">
+                <img src="${item.image}" alt="${item.name}" style="width:80%; height:80%; object-fit:cover; border-radius:10px;">
+            </div>
+            <div class="item-details">
+                <div class="item-name">${item.name}</div>
+                <div class="item-specs">ID: ${item.productId}</div>
+                <div class="item-price">${formatCurrency(item.price)}</div>
+                <div class="item-actions">
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="updateQuantity(${item.productId}, -1)">-</button>
+                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" readonly>
+                        <button class="quantity-btn" onclick="updateQuantity(${item.productId}, 1)">+</button>
+                    </div>
+                    <button class="btn-remove" onclick="removeItem(${item.productId})">Xóa</button>
+                </div>
+            </div>
+            <div class="item-total">
+                <div class="item-total-price">${formatCurrency(item.price * item.quantity)}</div>
+            </div>
+        </div>
+    `).join('');
+        }
+
+        function updateSummary(cart) {
+            const shippingText = cart.shippingFee === 0 ? 'Miễn phí' : formatCurrency(cart.shippingFee);
+
+            document.getElementById('itemCount').textContent = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('subtotal').textContent = formatCurrency(cart.subtotal);
+            document.getElementById('shipping').textContent = shippingText;
+            document.getElementById('discount').textContent = '-' + formatCurrency(cart.discount);
+            document.getElementById('totalAmount').textContent = formatCurrency(cart.total);
+        }
+
+        async function updateQuantity(id, change) {
+            try {
+                const inputElement = event.target.closest('.quantity-control').querySelector('.quantity-input');
+                const currentQty = parseInt(inputElement.value);
+                const newQuantity = currentQty + change;
+
+                if (newQuantity < 0) return;
+
+                const result = await fetchWithAuth(`${BASE_URL}/cart/items/${id}`, 'PUT', { quantity: newQuantity });
+
+                updateSummary(result.cart);
+                renderCartItems(result.cart.items);
+
+                alert('Cập nhật giỏ hàng thành công.');
+            } catch (error) {
+                alert('❌ Lỗi cập nhật: ' + error.message);
+                loadCart();
+            }
+        }
+
+        async function removeItem(id) {
+            if (!confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
+
+            try {
+                const result = await fetchWithAuth(`${BASE_URL}/cart/items/${id}`, 'DELETE');
+
+                updateSummary(result.cart);
+                renderCartItems(result.cart.items);
+
+                alert('Đã xóa sản phẩm khỏi giỏ hàng.');
+            } catch (error) {
+                alert('❌ Lỗi xóa sản phẩm: ' + error.message);
+            }
+        }
+
+        async function applyPromo() {
+            const code = document.getElementById('promoCode').value.trim();
+
+            if (code === '') {
+                alert(' Vui lòng nhập mã giảm giá');
+                return;
+            }
+
+            try {
+                const result = await fetchWithAuth(`${BASE_URL}/cart/apply-promo`, 'POST', { code });
+
+                updateSummary(result.cart);
+
+                alert(` Áp dụng mã giảm giá thành công! Giảm ${formatCurrency(result.cart.discount)}`);
+            } catch (error) {
+                alert(' Mã giảm giá không hợp lệ: ' + error.message);
+            }
+        }
+
+        function checkout() {
+            const totalItems = document.getElementById('itemCount').textContent;
+            if (parseInt(totalItems) === 0) {
+                alert('Giỏ hàng trống!');
+                return;
+            }
+            window.location.href = 'checkout.html';
+        }
+
+        async function loadCart() {
+            try {
+                const result = await fetchWithAuth(`${BASE_URL}/cart`);
+
+                updateSummary(result);
+                renderCartItems(result.items);
+
+            } catch (error) {
+                console.error('Lỗi tải giỏ hàng:', error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadCart);
+    </script>
+</body>
+</html>

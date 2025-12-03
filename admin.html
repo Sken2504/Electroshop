@@ -1,0 +1,2713 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản trị - ElectroShop Admin</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 10px rgba(255, 107, 0, 0.3);
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .sidebar-section {
+            padding: 20px 0;
+        }
+
+        .section-title {
+            padding: 10px 25px;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #8892a6;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            padding: 5px 0;
+        }
+
+        .menu-item {
+            padding: 12px 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+            position: relative;
+            color: #b8c5d6;
+            font-size: 14px;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 107, 0, 0.1);
+            color: #ffffff;
+        }
+
+        .menu-item.active {
+            background: rgba(255, 107, 0, 0.15);
+            color: #ffffff;
+        }
+
+        .menu-item.active::before {
+            transform: scaleY(1);
+        }
+
+        .menu-icon {
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+        .menu-badge {
+            margin-left: auto;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .badge-new {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            color: white;
+        }
+
+        .badge-hot {
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            color: white;
+        }
+
+        /* Top Header */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s;
+        }
+
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 16px;
+        }
+
+        .search-input {
+            padding: 10px 15px 10px 45px;
+            border: 2px solid #e8ecef;
+            border-radius: 25px;
+            width: 300px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #ff6b00;
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+            width: 350px;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .nav-icon:hover {
+            background: #f5f7fa;
+            transform: scale(1.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            color: white;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .user-profile:hover {
+            background: #f5f7fa;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: #999;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeInDown 0.5s;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb-item {
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .breadcrumb-item:hover {
+            color: #ff6b00;
+        }
+
+        .breadcrumb-item.active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #8892a6;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.5s;
+            transition: transform 0.3s;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 15px;
+            border: 2px solid #e8ecef;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            border-color: #ff6b00;
+            color: #ff6b00;
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            color: white;
+            border-color: #ff6b00;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+            background: linear-gradient(180deg, rgba(255, 107, 0, 0.05) 0%, transparent 100%);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .chart-area {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80%;
+        }
+
+        .chart-line svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-point {
+            animation: pointPulse 2s infinite;
+        }
+
+        @keyframes pointPulse {
+
+            0%,
+            100% {
+                r: 6;
+            }
+
+            50% {
+                r: 8;
+            }
+        }
+
+        /* Stats Cards Right Side */
+        .stats-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stat-card-mini {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            animation: slideInRight 0.5s;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .stat-card-mini:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .stat-card-mini::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            opacity: 0.1;
+            transform: translate(30%, -30%);
+        }
+
+        .stat-card-mini.blue::before {
+            background: #0099ff;
+        }
+
+        .stat-card-mini.green::before {
+            background: #00d4aa;
+        }
+
+        .stat-card-mini.orange::before {
+            background: #ff9800;
+        }
+
+        .stat-header-mini {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #8892a6;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-value-large {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1a1a2e;
+            transition: transform 0.3s;
+        }
+
+        .stat-card-mini:hover .stat-value-large {
+            transform: scale(1.1);
+        }
+
+        .stat-date {
+            font-size: 12px;
+            color: #b8c5d6;
+            margin-top: 5px;
+        }
+
+        .stat-icon-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card-mini:hover .stat-icon-circle {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .stat-icon-circle.blue {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            box-shadow: 0 4px 15px rgba(0, 153, 255, 0.3);
+        }
+
+        .stat-icon-circle.green {
+            background: linear-gradient(135deg, #00f2c3 0%, #00d4aa 100%);
+            box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+        }
+
+        .stat-icon-circle.orange {
+            background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        /* Bottom Stats Grid */
+        .stats-grid-bottom {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .stat-card-full {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+            animation: fadeInUp 0.5s;
+            cursor: pointer;
+        }
+
+        .stat-card-full:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-icon-large {
+            width: 70px;
+            height: 70px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            flex-shrink: 0;
+            transition: transform 0.3s;
+        }
+
+        .stat-card-full:hover .stat-icon-large {
+            transform: rotate(360deg);
+        }
+
+        .stat-icon-large.gradient-1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-icon-large.gradient-2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+        }
+
+        .stat-icon-large.gradient-3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .stat-icon-large.gradient-4 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-title-full {
+            font-size: 14px;
+            color: #8892a6;
+            margin-bottom: 8px;
+        }
+
+        .stat-value-full {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+
+        .stat-change {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            color: #00d4aa;
+        }
+
+        .stat-change.negative {
+            color: #ff5252;
+        }
+
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        /* Table Styles */
+        .table-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-top: 25px;
+            animation: fadeIn 0.5s;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: #f8f9fb;
+        }
+
+        .data-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1a1a2e;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9fb;
+            transform: scale(1.01);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .status-badge:hover {
+            transform: scale(1.1);
+        }
+
+        .status-badge.success {
+            background: #e8f5e9;
+            color: #4CAF50;
+        }
+
+        .status-badge.warning {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+
+        .status-badge.info {
+            background: #e3f2fd;
+            color: #2196F3;
+        }
+
+        .btn-action {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin-right: 5px;
+        }
+
+        .btn-view {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            color: white;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-action:active {
+            transform: translateY(0);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            animation: slideInDown 0.3s;
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a2e;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: all 0.3s;
+        }
+
+        .btn-close:hover {
+            color: #ff6b00;
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e8ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #ff6b00;
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+        }
+
+        .btn-primary {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ffa500 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 30px;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 3000;
+            display: none;
+            animation: slideInRight 0.3s;
+        }
+
+        .toast.show {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .toast.error {
+            border-left: 4px solid #ff5252;
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 4000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ff6b00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .search-input {
+                width: 150px;
+            }
+
+            .search-input:focus {
+                width: 200px;
+            }
+
+            .stats-grid-bottom {
+                grid-template-columns: 1fr;
+            }
+
+            .user-info {
+                display: none;
+            }
+        }
+
+        .logout-menu {
+            display: none;
+            background: #fff;
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            padding: 12px 18px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            cursor: pointer;
+            color: #333;
+            z-index: 2000;
+            transition: all 0.3s;
+        }
+
+        .logout-menu.active {
+            display: block;
+        }
+
+        .logout-menu:hover {
+            background: #f2f2f2;
+        }
+
+        /* Tooltip đẹp cho admin */
+        .tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            /* Lấy nội dung từ data-tooltip */
+            position: absolute;
+            bottom: -32px;
+            /* Hiện dưới icon */
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: rgba(0, 0, 0, 0.85);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .tooltip:hover::after,
+        .tooltip:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">E</div>
+                <div class="logo-text">ElectroShop</div>
+            </div>
+
+
+            <div class="sidebar-section">
+
+                <div class="section-title">Menu chính</div>
+                <nav class="sidebar-menu">
+                    <div class="menu-item active" onclick="showSection('dashboard')">
+                        <span class="menu-icon">■</span>
+                        <span>Dashboard</span>
+
+                    </div>
+                    <div class="menu-item" onclick="showSection('products')">
+                        <span class="menu-icon">▣</span>
+                        <span>Sản phẩm</span>
+
+                    </div>
+                    <div class="menu-item" onclick="showSection('orders')">
+                        <span class="menu-icon">≡</span>
+                        <span>Đơn hàng</span>
+
+                        <span class="menu-badge badge-hot" id="orderBadge">12</span>
+                    </div>
+                    <div class="menu-item" onclick="showSection('customers')">
+                        <span class="menu-icon">♦</span>
+
+                        <span>Khách hàng</span>
+                    </div>
+                    <div class="menu-item" onclick="showSection('categories')">
+                        <span class="menu-icon">▦</span>
+                        <span>Danh mục</span>
+
+                    </div>
+                    <div class="menu-item" onclick="showSection('settings')">
+                        <span class="menu-icon">⊙</span>
+                        <span>Cài đặt</span>
+
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <nav class="top-navbar">
+                <div class="navbar-left">
+                </div>
+
+                <div class="navbar-right">
+                    <div class="nav-icon tooltip" onclick="showNotifications()" data-tooltip="Thông báo">
+                        ◉
+                    </div>
+                    <a href="https://m.me/61584407585856" target="_blank" class="nav-icon tooltip flex-fix"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; justify-content:center;"
+                        data-tooltip="Tin nhắn">
+                        ▣
+                    </a>
+                    <div class="user-profile" onclick="toggleUserMenu()">
+                        <div class="user-avatar" id="adminAvatar">JD</div>
+                        <div class="user-info">
+
+                            <div class="user-name" id="adminName"></div>
+                            <div class="user-role" id="adminRole">Administrator</div>
+                        </div>
+                        <div id="logoutMenu" class="logout-menu">Đăng xuất</div>
+
+                    </div>
+                </div>
+            </nav>
+
+            <div class="content-area">
+                <div class="section-content active" id="dashboard">
+                    <div class="page-header">
+
+                        <div class="breadcrumb">
+                            <span class="breadcrumb-item" onclick="showSection('dashboard')">»</span>
+                            <span class="breadcrumb-item">/</span>
+
+                            <span class="breadcrumb-item active">Dashboard</span>
+                        </div>
+                        <h1 class="page-title">Dashboard</h1>
+                        <p class="page-subtitle">Chào mừng trở lại!
+                            Đây là tổng quan hệ thống của bạn</p>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="chart-card">
+
+                            <div class="card-header">
+                                <h3 class="card-title">Deals Analytics</h3>
+                                <div class="chart-controls">
+
+                                    <button class="control-btn" onclick="changeChart('daily')">Daily</button>
+                                    <button class="control-btn active" onclick="changeChart('weekly')">Weekly</button>
+                                    <button class="control-btn" onclick="changeChart('monthly')">Monthly</button>
+
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="dealsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="stats-sidebar">
+                            <div class="stat-card-mini blue" onclick="animateValue('impValue', 1563, 2000, 1000)">
+
+                                <div class="stat-header-mini">
+                                    <div>
+                                        <div class="stat-label">Lượt tiếp cận trang web</div>
+                                        <div class="stat-value-large" id="impValue">1,563</div>
+                                    </div>
+                                    <div class="stat-icon-circle blue">◎</div>
+                                </div>
+
+                            </div>
+
+                            <div class="stat-card-mini green" onclick="animateValue('goalValue', 30564, 35000, 1000)">
+                                <div class="stat-header-mini">
+
+                                    <div>
+                                        <div class="stat-label">Mục tiêu</div>
+                                        <div class="stat-value-large" id="goalValue">30,564</div>
+                                    </div>
+
+                                    <div class="stat-icon-circle green">$</div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card-mini orange" onclick="animateValue('impactValue', 42.6, 50.0, 
+1000)">
+                                <div class="stat-header-mini">
+                                    <div>
+
+                                        <div class="stat-label">Ảnh hưởng</div>
+                                        <div class="stat-value-large" id="impactValue">42.6%</div>
+                                    </div>
+                                    <div class="stat-icon-circle orange">▲</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid-bottom">
+
+                        <div class="stat-card-full" onclick="showSection('orders')">
+                            <div class="stat-icon-large gradient-1">$</div>
+                            <div class="stat-content">
+
+                                <div class="stat-title-full">Tổng doanh thu</div>
+                                <div class="stat-value-full" id="totalRevenue">2.5 tỷ</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card-full" onclick="showSection('orders')">
+                            <div class="stat-icon-large gradient-2">▣</div>
+
+                            <div class="stat-content">
+                                <div class="stat-title-full">Đơn hàng</div>
+                                <div class="stat-value-full" id="totalOrders">1,234</div>
+                            </div>
+                        </div>
+
+
+                        <div class="stat-card-full" onclick="showSection('products')">
+                            <div class="stat-icon-large gradient-3">◘</div>
+                            <div class="stat-content">
+
+                                <div class="stat-title-full">Sản phẩm</div>
+                                <div class="stat-value-full" id="totalProducts">156</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card-full" onclick="showSection('customers')">
+                            <div class="stat-icon-large gradient-4">♦</div>
+
+                            <div class="stat-content">
+                                <div class="stat-title-full">Khách hàng</div>
+                                <div class="stat-value-full" id="totalCustomers">3,567</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="table-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Đơn hàng gần đây</h3>
+
+                            <button class="btn-action btn-view" onclick="showSection('orders')">Xem tất cả</button>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+
+                                    <th>Sản phẩm</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+
+                                    <th>Ngày đặt</th>
+                                    <th>Thao tác</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="recentOrdersTable">
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+                <div class="section-content" id="products">
+                    <div class="page-header">
+
+                        <div class="breadcrumb">
+                            <span class="breadcrumb-item" onclick="showSection('dashboard')">»</span>
+                            <span class="breadcrumb-item">/</span>
+
+                            <span class="breadcrumb-item active">Sản phẩm</span>
+                        </div>
+                        <h1 class="page-title">Quản lý sản phẩm</h1>
+                        <p class="page-subtitle">Quản lý toàn bộ sản phẩm trong cửa hàng</p>
+
+                    </div>
+
+                    <div style="display: flex;
+justify-content: space-between; align-items: center; margin-bottom: 20px;" id="productsControlBar">
+                        <div class="product-stats">
+                        </div>
+
+                        <div class="product-actions-right" style="display: flex; gap: 15px; align-items: center;">
+
+                            <select class="form-select" id="productSortSelect" style="width: 150px;
+padding: 8px;">
+                                <option value="id-asc">ID (Thấp - Cao)</option>
+                                <option value="id-desc">ID (Cao - Thấp)</option>
+
+                                <option value="category-asc">Danh mục (A - Z)</option>
+                                <option value="price-desc">Giá (Cao - Thấp)</option>
+                                <option value="price-asc">Giá (Thấp - Cao)</option>
+
+                            </select>
+
+                            <button class="btn-primary" style="width: auto;" onclick="openModal('addProduct')">+ Thêm
+                                sản phẩm mới</button>
+
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <table class="data-table">
+                            <thead>
+
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên
+                                        sản phẩm</th>
+                                    <th>Danh mục</th>
+                                    <th>Giá</th>
+
+                                    <th>Tồn kho</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="productsTable">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="section-content" id="orders">
+                    <div class="page-header">
+
+                        <div class="breadcrumb">
+                            <span class="breadcrumb-item" onclick="showSection('dashboard')">»</span>
+                            <span class="breadcrumb-item">/</span>
+
+                            <span class="breadcrumb-item active">Đơn hàng</span>
+                        </div>
+                        <h1 class="page-title">Quản lý đơn hàng</h1>
+                        <p class="page-subtitle">Quản lý toàn bộ đơn hàng của cửa hàng</p>
+
+                    </div>
+
+                    <div class="table-card">
+                        <table class="data-table">
+                            <thead>
+
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+
+                                    <th>Sản phẩm</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+
+                                    <th>Ngày đặt</th>
+                                    <th>Thao tác</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="section-content" id="customers">
+
+                    <div class="page-header">
+                        <div class="breadcrumb">
+                            <span class="breadcrumb-item" onclick="showSection('dashboard')">»</span>
+                            <span class="breadcrumb-item">/</span>
+
+                            <span class="breadcrumb-item active">Khách hàng</span>
+                        </div>
+                        <h1 class="page-title">Quản lý khách hàng</h1>
+                        <p class="page-subtitle">Danh sách khách hàng và thông tin</p>
+
+                    </div>
+
+                    <div class="table-card">
+                        <table class="data-table">
+                            <thead>
+
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Họ tên</th>
+
+                                    <th>Email</th>
+                                    <th>Số điện thoại</th>
+
+                                    <th>Tổng đơn</th>
+                                    <th>Tổng chi tiêu</th>
+                                    <th>Ngày đăng ký</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="section-content" id="categories">
+                    <div class="stats-grid-bottom">
+                        <div class="stat-card-full">
+                            <div class="stat-icon-large gradient-1">▣</div>
+                            <div class="stat-content">
+                                <div class="stat-title-full">Điện thoại</div>
+                                <div class="stat-value-full" id="catPhoneCount">0</div>
+                                <div class="stat-change positive">sản phẩm</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card-full">
+                            <div class="stat-icon-large gradient-2">◘</div>
+                            <div class="stat-content">
+                                <div class="stat-title-full">Laptop</div>
+                                <div class="stat-value-full" id="catLaptopCount">0</div>
+                                <div class="stat-change positive">sản phẩm</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card-full">
+                            <div class="stat-icon-large gradient-3">▦</div>
+                            <div class="stat-content">
+                                <div class="stat-title-full">Máy tính bảng</div>
+                                <div class="stat-value-full" id="catTabletCount">0</div>
+                                <div class="stat-change positive">sản phẩm</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card-full">
+                            <div class="stat-icon-large gradient-4">◎</div>
+                            <div class="stat-content">
+                                <div class="stat-title-full">Phụ kiện</div>
+                                <div class="stat-value-full" id="catAccessoryCount">0</div>
+                                <div class="stat-change positive">sản phẩm</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-card" style="margin-top: 30px;">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh sách danh mục</h3>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên danh mục</th>
+                                    <th>Số sản phẩm</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div class="section-content" id="settings">
+                    <div class="page-header">
+                        <div class="breadcrumb">
+                            <span class="breadcrumb-item" onclick="showSection('dashboard')">»</span>
+
+                            <span class="breadcrumb-item">/</span>
+                            <span class="breadcrumb-item active">Cài đặt</span>
+                        </div>
+                        <h1 class="page-title">Cài đặt hệ thống</h1>
+
+                        <p class="page-subtitle">Quản lý cấu hình và thông tin cửa hàng</p>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="card-header">
+
+                            <h3 class="card-title">Thông tin cửa hàng</h3>
+                        </div>
+                        <form onsubmit="saveSettings(event)" style="padding: 10px 0;">
+
+                            <div class="form-group">
+                                <label class="form-label">Tên cửa hàng</label>
+                                <input type="text" class="form-input" id="shopName">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email liên hệ</label>
+                                <input type="email" class="form-input" id="shopEmail">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="tel" class="form-input" id="shopPhone">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Địa chỉ</label>
+                                <input type="text" class="form-input" id="shopAddress">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mô tả</label>
+                                <textarea class="form-input" rows="4" style="resize: vertical;"
+                                    id="shopDescription"></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary">Lưu thay đổi</button>
+
+                        </form>
+
+                        <div class="table-card" style="margin-top: 25px;">
+                            <div class="card-header">
+                                <h3 class="card-title">Cài đặt
+                                    thanh toán</h3>
+                            </div>
+                            <form onsubmit="savePaymentSettings(event)" style="padding: 10px 0;">
+                                <div class="form-group">
+
+                                    <label class="form-label">Phương thức thanh toán</label>
+                                    <div style="display: flex;
+flex-direction: column; gap: 10px; margin-top: 10px;">
+                                        <label style="display: flex;
+align-items: center; gap: 10px; cursor: pointer;">
+                                            <input type="checkbox" checked style="width: 18px;
+height: 18px;" id="paymentCod">
+                                            <span>Thanh toán khi nhận hàng (COD)</span>
+
+                                        </label>
+                                        <label style="display: flex;
+align-items: center; gap: 10px; cursor: pointer;">
+                                            <input type="checkbox" checked style="width: 18px;
+height: 18px;" id="paymentBank">
+                                            <span>Chuyển khoản ngân hàng</span>
+
+                                        </label>
+                                        <label style="display: flex;
+align-items: center; gap: 10px; cursor: pointer;">
+                                            <input type="checkbox" style="width: 18px;
+height: 18px;" id="paymentEwallet">
+                                            <span>Ví điện tử (MoMo, ZaloPay)</span>
+                                        </label>
+
+                                        <label style="display: flex;
+align-items: center; gap: 10px; cursor: pointer;">
+                                            <input type="checkbox" style="width: 18px;
+height: 18px;" id="paymentCard">
+                                            <span>Thẻ tín dụng/ghi nợ</span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+
+                                    <label class="form-label">Số tài khoản ngân hàng</label>
+                                    <input type="text" class="form-input" required id="bankAccount">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Ngân hàng</label>
+                                    <select class="form-select" required id="bankName">
+
+                                        <option>Vietcombank</option>
+                                        <option>Techcombank</option>
+                                        <option>BIDV</option>
+                                        <option>VietinBank</option>
+                                        <option>ACB</option>
+                                        <option>MB</option>
+                                    </select>
+
+                                </div>
+                                <button type="submit" class="btn-primary">Lưu cài đặt thanh toán</button>
+                            </form>
+                        </div>
+
+
+                        <div class="table-card" style="margin-top: 25px;">
+                            <div class="card-header">
+                                <h3 class="card-title">Cài đặt vận chuyển</h3>
+                            </div>
+
+                            <form onsubmit="saveShippingSettings(event)" style="padding: 10px 0;">
+                                <div class="form-group">
+                                    <label class="form-label">Đơn vị vận chuyển</label>
+
+                                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                            <input type="checkbox" checked style="width: 18px; height: 18px;"
+                                                id="shipGhn">
+                                            <span>Giao hàng nhanh</span>
+                                        </label>
+
+                                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                            <input type="checkbox" checked style="width: 18px; height: 18px;"
+                                                id="shipGhtk">
+                                            <span>Giao hàng tiết kiệm</span>
+                                        </label>
+
+                                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                            <input type="checkbox" style="width: 18px; height: 18px;" id="shipVnpost">
+                                            <span>VNPost</span>
+                                        </label>
+
+                                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                            <input type="checkbox" style="width: 18px; height: 18px;" id="shipJt">
+                                            <span>J&T Express</span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+
+                                    <label class="form-label">Phí vận chuyển mặc định</label>
+                                    <input type="number" class="form-input" required id="defaultShippingFee">
+                                </div>
+                                <div class="form-group">
+
+                                    <label class="form-label">Miễn phí vận chuyển cho đơn từ</label>
+                                    <input type="number" class="form-input" required id="freeShippingMin">
+                                </div>
+                                <button type="submit" class="btn-primary">Lưu cài đặt vận chuyển</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+        </main>
+    </div>
+
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Thêm sản phẩm mới</h3>
+                <button class="btn-close" onclick="closeModal()">&times;</button>
+            </div>
+
+            <form onsubmit="saveProduct(event)">
+                <div class="form-group">
+                    <label class="form-label">Tên sản phẩm</label>
+                    <input type="text" class="form-input" id="modalProductName" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Thương hiệu (Brand)</label>
+                    <input type="text" class="form-input" id="modalProductBrand" value="">
+                </div>
+                <div class="form-group">
+
+                    <label class="form-label">Tóm tắt cấu hình</label>
+                    <input type="text" class="form-input" id="modalProductSpecsSummary" value="">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ảnh sản phẩm</label>
+                    <input type="file" class="form-input" id="modalProductImageFile" name="productImage"
+                        accept="image/*">
+                    <input type="hidden" id="modalProductImageURLOld" name="imageURLOld">
+                    <small id="currentImageURL" style="margin-top: 5px; display: block; color: #555;"></small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Danh mục</label>
+                    <select class="form-select" id="modalProductCategory" required>
+
+                        <option value="">Chọn danh mục</option>
+                        <option value="dienthoai">Điện thoại</option>
+                        <option value="laptop">Laptop</option>
+                        <option value="maytinhbang">Máy tính bảng</option>
+
+                        <option value="phukien">Phụ kiện</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Giá</label>
+
+                    <input type="number" class="form-input" id="modalProductPrice" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tồn kho</label>
+                    <input type="number" class="form-input" id="modalProductStock" required>
+
+                </div>
+                <button type="submit" class="btn-primary">Lưu sản phẩm</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="categoryModalTitle">Thêm danh mục mới</h3>
+                <button class="btn-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form onsubmit="saveCategory(event)">
+                <input type="hidden" id="modalCategoryId">
+                <input type="hidden" id="modalCategoryKey">
+                <div class="form-group">
+                    <label class="form-label">Tên danh mục</label>
+                    <input type="text" class="form-input" id="modalCategoryName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mô tả (Tùy chọn)</label>
+                    <textarea class="form-input" rows="3" id="modalCategoryDescription"></textarea>
+                </div>
+                <button type="submit" class="btn-primary" id="btnSaveCategory">Lưu danh mục</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const BASE_URL = 'http://localhost:5000/api';
+        let currentEditingProductId = null;
+        // --- Utility Functions ---
+
+        function formatCurrency(amount) {
+            // FIX: Đảm bảo kiểm tra null/undefined an toàn
+            if (amount === undefined || amount === null || isNaN(Number(amount))) return '0₫';
+            return Number(amount).toLocaleString('vi-VN') + '₫';
+        }
+
+        function getStatusBadge(status) {
+            let className = 'info';
+            let displayStatus = status;
+
+            if (status === 'delivered' || status === 'Đã giao') {
+                className = 'success';
+                displayStatus = 'ĐÃ GIAO';
+            } else if (status === 'cancelled' || status === 'Đã hủy') {
+                className = 'danger';
+                displayStatus = 'ĐÃ HỦY';
+            } else if (status === 'confirmed' || status === 'Đã xác nhận') {
+                className = 'success';
+                displayStatus = 'ĐÃ XÁC NHẬN';
+            } else if (status === 'pending') {
+                className = 'warning';
+                displayStatus = 'CHỜ XÁC NHẬN';
+            } else if (status.toLowerCase().includes('còn hàng') || status.toLowerCase().includes('đang hoạt động') || status.toLowerCase() === 'hoạt động') { // Thêm logic cho Danh mục/Sản phẩm
+                className = 'success';
+                displayStatus = 'HOẠT ĐỘNG';
+            } else if (status.toLowerCase().includes('hết hàng') || status.toLowerCase().includes('nháp')) {
+                className = 'warning';
+                displayStatus = 'HẾT HÀNG';
+            }
+
+            return `<span class="status-badge ${className}">${displayStatus.toUpperCase()}</span>`;
+        }
+
+        async function fetchAdminData(url, method = 'GET', data = null) {
+            showLoading();
+            const token = localStorage.getItem('userToken');
+
+            if (!token) {
+                hideLoading();
+                window.location.replace('login.html');
+                return;
+            }
+
+            const isFormData = data instanceof FormData;
+            let headers = { 'Authorization': `Bearer ${token}` };
+            if (!isFormData) headers['Content-Type'] = 'application/json';
+
+            const config = { method, headers };
+            if (data) {
+                config.body = isFormData ?
+                    data : JSON.stringify(data);
+            }
+
+            try {
+                const response = await fetch(url, config);
+                const contentType = response.headers.get('content-type');
+                let result;
+
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    const text = await response.text();
+                    throw new Error(text || `HTTP ${response.status}`);
+                }
+
+                hideLoading();
+                if (!response.ok) {
+                    const msg = result.message ||
+                        result.error || `Lỗi ${response.status}`;
+                    showToast(msg, 'error');
+                    throw new Error(msg);
+                }
+
+                return result;
+            } catch (err) {
+                hideLoading();
+                const msg = err.message.includes('Unexpected token')
+                    ?
+                    'Lỗi server: Dữ liệu trả về không hợp lệ!'
+                    : err.message;
+                showToast(msg, 'error');
+                throw err;
+            }
+        }
+
+
+        // --- Render Tables ---
+
+        function renderProductsTable(products) {
+            const tableBody = document.getElementById('productsTable');
+            if (!tableBody) return;
+
+            tableBody.innerHTML = products.map(product => {
+                const stockStatus = product.stock > 0 ? 'Còn hàng' : 'Hết hàng';
+                const statusBadge = getStatusBadge(stockStatus);
+
+                const imageUrl = product.image && product.image.length > 5 ? product.image : 'img/default.jpg';
+
+                return `
+            <tr>
+                <td><strong>#${product.id}</strong></td>
+                <td style="display: flex; align-items: center; gap: 10px;">
+                    <img src="${imageUrl}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">
+                    ${product.name}
+                </td>
+                <td>${product.category}</td>
+                <td><strong>${formatCurrency(product.price)}</strong></td>
+                <td>${product.stock}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <button class="btn-action btn-edit" onclick="editProduct('${product._id}')">Sửa</button>
+                    <button class="btn-action btn-delete" onclick="deleteProduct('${product._id}')">Xóa</button>
+                </td>
+            </tr>
+        `;
+            }).join('');
+        }
+
+        function renderOrdersTable(orders) {
+            const tableBody = document.getElementById('ordersTableBody');
+            if (!tableBody) return;
+
+            tableBody.innerHTML = orders.map(order => {
+                const statusBadge = getStatusBadge(order.status);
+                const date = new Date(order.createdAt).toLocaleDateString('vi-VN');
+
+                return `
+            <tr>
+                <td><strong>#${order.orderId}</strong></td>
+                <td>${order.customerName}<br><small>${order.phone}</small></td>
+                <td>${order.items.length} sản phẩm</td>
+                <td><strong>${formatCurrency(order.totalAmount)}</strong></td>
+                <td>${statusBadge}</td>
+                <td>${date}</td>
+                <td>
+                    <button class="btn-action btn-edit" onclick="processOrder('${order._id}')">Xử lý</button>
+                    <button class="btn-action btn-view" onclick="viewOrder('${order.orderId}')">Xem</button>
+                </td>
+            </tr>
+        `;
+            }).join('');
+        }
+
+        function renderRecentOrdersTable(orders) {
+            const tableBody = document.getElementById('recentOrdersTable');
+            if (!tableBody) return;
+
+            if (orders.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Không có đơn hàng gần đây nào.</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = orders.map(order => {
+                const statusBadge = getStatusBadge(order.status);
+                const date = new Date(order.createdAt).toLocaleDateString('vi-VN');
+                const firstItem = order.items[0] || { name: 'Không rõ' };
+
+                return `
+            <tr>
+                <td><strong>#${order.orderId}</strong></td>
+                <td>${order.customerName}</td>
+                <td>${firstItem.name} (${order.items.length})</td>
+                <td><strong>${formatCurrency(order.totalAmount)}</strong></td>
+                <td>${statusBadge}</td>
+                <td>${date}</td>
+                <td><button class="btn-action btn-view" onclick="viewOrder('${order.orderId}')">Xem</button></td>
+            </tr>
+        `;
+            }).join('');
+        }
+
+        function renderCustomersTable(customers) {
+            const tableBody = document.getElementById('customersTableBody');
+            if (!tableBody) return;
+
+            if (customers.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Không có khách hàng nào trong hệ thống.</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = customers.map((customer, index) => {
+                const totalSpending = customer.totalSpent || 0;
+                const totalOrders = customer.totalOrders || 0;
+                let joinDate = 'N/A';
+
+                if (customer.createdAt) {
+                    const date = new Date(customer.createdAt);
+                    if (!isNaN(date.getTime())) {
+                        joinDate = date.toLocaleDateString('vi-VN');
+                    }
+                }
+                else if (customer._id && customer._id.length === 24) {
+                    try {
+                        const timestamp = parseInt(customer._id.substring(0, 8), 16) * 1000;
+                        const date = new Date(timestamp);
+                        if (!isNaN(date.getTime())) {
+                            joinDate = date.toLocaleDateString('vi-VN');
+                        }
+                    } catch (e) {
+                        console.warn('Lỗi parse ObjectId:', customer._id);
+                    }
+                }
+
+                return `
+            <tr>
+                <td><strong>#${index + 1}</strong></td>
+                <td>${customer.name || 'Chưa đặt tên'}</td>
+                <td>${customer.email}</td>
+                <td>${customer.phone || 'N/A'}</td>
+                <td>${totalOrders}</td>
+                <td><strong>${formatCurrency(totalSpending)}</strong></td>
+                <td>${joinDate}</td>
+            </tr>
+        `;
+            }).join('');
+        }
+
+        function renderCategoriesTable(categories) {
+            const tableBody = document.getElementById('categoriesTableBody');
+            if (!tableBody) return;
+
+            updateCategoryStatCards(categories);
+
+            if (categories.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Không có danh mục nào.</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = categories.map(category => {
+                const productCount = category.productCount || 0;
+                const statusText = (category.status || (productCount > 0 ? 'HOẠT ĐỘNG' : 'NHÁP'));
+                const statusBadge = getStatusBadge(statusText);
+
+                let dateString = 'N/A';
+                let rawDate = category.createdAt || category._id;
+
+                if (rawDate) {
+                    let date;
+                    if (!category.createdAt && typeof rawDate === 'string' && rawDate.length === 24) {
+                        const timestamp = parseInt(rawDate.substring(0, 8), 16) * 1000;
+                        date = new Date(timestamp);
+                    } else {
+                        date = new Date(rawDate);
+                    }
+
+                    if (!isNaN(date.getTime())) {
+                        dateString = date.toLocaleDateString('vi-VN');
+                    }
+                }
+
+                const displayId = category.id || (category._id ? category._id.substring(0, 6).toUpperCase() : 'N/A');
+
+                return `
+            <tr>
+                <td><strong>${displayId}</strong></td>
+                <td>${category.name}</td>
+                <td><strong style="color: #1a1a2e;">${productCount}</strong></td>
+                <td>${statusBadge}</td>
+                <td>${dateString}</td>
+                <td>
+                    <button class="btn-action btn-edit" onclick="editCategory('${category._id}')">Sửa</button>
+                    <button class="btn-action btn-delete" onclick="deleteCategory('${category._id}')">Xóa</button>
+                </td>
+            </tr>
+        `;
+            }).join('');
+        }
+
+        // [BỔ SUNG MỚI] Hàm cập nhật các stat card bằng ID gốc của bạn
+        function updateCategoryStatCards(categories) {
+            // Tạo map để tra cứu nhanh theo key (không dấu) – SIÊU ỔN ĐỊNH!
+            const countMap = {};
+            categories.forEach(cat => {
+                if (cat.key && cat.productCount !== undefined) {
+                    countMap[cat.key] = cat.productCount;
+                }
+            });
+
+            // Gán số liệu theo đúng key trong DB của fen
+            const phoneElement = document.getElementById('catPhoneCount');
+            if (phoneElement) {
+                phoneElement.textContent = (countMap['dienthoai'] || 0).toLocaleString('vi-VN');
+            }
+
+            const laptopElement = document.getElementById('catLaptopCount');
+            if (laptopElement) {
+                laptopElement.textContent = (countMap['laptop'] || 0).toLocaleString('vi-VN');
+            }
+
+            const tabletElement = document.getElementById('catTabletCount');
+            if (tabletElement) {
+                tabletElement.textContent = (countMap['maytinhbang'] || 0).toLocaleString('vi-VN');
+            }
+
+            const accessoryElement = document.getElementById('catAccessoryCount');
+            if (accessoryElement) {
+                accessoryElement.textContent = (countMap['phukien'] || 0).toLocaleString('vi-VN');
+            }
+        }
+
+
+        async function loadDashboardStats() {
+            try {
+                const result = await fetchAdminData(`${BASE_URL}/admin/stats`);
+                const recentOrders = await loadOrders(3);
+
+                document.getElementById('totalRevenue').textContent = formatCurrency(result.totalRevenue || 0);
+                document.getElementById('totalOrders').textContent = (result.totalOrders || 0).toLocaleString('vi-VN');
+                document.getElementById('totalProducts').textContent = (result.totalProducts || 0).toLocaleString('vi-VN');
+                document.getElementById('totalCustomers').textContent = (result.totalCustomers || 0).toLocaleString('vi-VN');
+
+                document.getElementById('orderBadge').textContent = (result.totalOrders || 0);
+                animateValue('impValue', 1563, 2000, 1000);
+                animateValue('goalValue', 30564, 35000, 1000);
+                animateValue('impactValue', 42.6, 50.0, 1000);
+
+                renderRecentOrdersTable(recentOrders);
+            } catch (error) {
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                const sortSelect = document.getElementById('productSortSelect');
+                const sortValue = sortSelect?.value || 'id-asc';
+                const [sortBy, sortOrder] = sortValue.split('-');
+
+                const url = `${BASE_URL}/admin/products?sortBy=${sortBy}&sortOrder=${sortOrder}`;
+
+                const result = await fetchAdminData(url);
+                renderProductsTable(result.products);
+            } catch (error) {
+                renderProductsTable([]);
+            }
+        }
+
+        async function loadOrders(limit = 0) {
+            try {
+                const result = await fetchAdminData(`${BASE_URL}/admin/orders`);
+                const orders = result.orders;
+
+                if (limit > 0) {
+                    return orders.slice(0, limit);
+                }
+
+                renderOrdersTable(orders);
+                return orders;
+            } catch (error) {
+                renderOrdersTable([]);
+                return [];
+            }
+        }
+
+        async function loadCustomers() {
+            try {
+                const result = await fetchAdminData(`${BASE_URL}/admin/customers`);
+                renderCustomersTable(result.customers);
+            } catch (error) {
+                renderCustomersTable([]);
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const result = await fetchAdminData(`${BASE_URL}/admin/categories`);
+
+                renderCategoriesTable(result.categories);
+
+                updateCategoryStatCards(result.categories);
+
+            } catch (error) {
+                console.error('Lỗi load danh mục:', error);
+                renderCategoriesTable([]);
+                updateCategoryStatCards([]);
+            }
+        }
+
+        // --- CRUD/Action Functions ---
+
+        function closeModal() {
+            document.getElementById('productModal').classList.remove('active');
+            document.getElementById('categoryModal').classList.remove('active'); // <-- THÊM DÒNG NÀY
+            document.querySelector('#productModal form').reset();
+            currentEditingProductId = null;
+            document.getElementById('currentImageURL').textContent = '';
+
+            // Reset form danh mục
+            document.querySelector('#categoryModal form').reset();
+            document.getElementById('modalCategoryId').value = '';
+            document.getElementById('categoryModalTitle').textContent = 'Thêm danh mục mới';
+            document.getElementById('btnSaveCategory').textContent = 'Lưu danh mục';
+        }
+
+        function openModal(type, productData = {}) {
+            currentEditingProductId = productData._id ||
+                null;
+            document.getElementById('productModal').classList.add('active');
+
+            if (productData.name) {
+                document.getElementById('modalProductName').value = productData.name;
+                document.getElementById('modalProductPrice').value = productData.price;
+                document.getElementById('modalProductStock').value = productData.stock;
+                document.getElementById('modalProductCategory').value = productData.category;
+
+                document.getElementById('modalProductBrand').value = productData.brand || 'Unknown';
+                document.getElementById('modalProductSpecsSummary').value = productData.specsSummary || '';
+                const imageURL = productData.image || '';
+                document.getElementById('modalProductImageFile').value = '';
+                document.getElementById('modalProductImageURLOld').value = imageURL;
+                document.getElementById('currentImageURL').textContent = 'Ảnh cũ: ' + (imageURL.length > 50 ? imageURL.substring(0, 50) + '...' : imageURL);
+                document.querySelector('.modal-title').textContent = 'Chỉnh sửa sản phẩm';
+            } else {
+                document.getElementById('productModal').querySelector('form').reset();
+                document.getElementById('currentImageURL').textContent = '';
+                document.querySelector('.modal-title').textContent = 'Thêm sản phẩm mới';
+            }
+        }
+
+        async function saveProduct(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('name', document.getElementById('modalProductName').value);
+            formData.append('brand', document.getElementById('modalProductBrand').value || 'Unknown');
+            formData.append('specsSummary', document.getElementById('modalProductSpecsSummary').value || '');
+            formData.append('category', document.getElementById('modalProductCategory').value);
+            formData.append('price', document.getElementById('modalProductPrice').value);
+            formData.append('stock', document.getElementById('modalProductStock').value);
+            if (document.getElementById('modalProductImageFile').files[0]) {
+                formData.append('productImage', document.getElementById('modalProductImageFile').files[0]);
+            } else if (currentEditingProductId) {
+                formData.append('imageURLOld', document.getElementById('modalProductImageURLOld').value);
+            }
+
+            try {
+                const method = currentEditingProductId ?
+                    'PUT' : 'POST';
+                const url = currentEditingProductId ? `${BASE_URL}/admin/products/${currentEditingProductId}` : `${BASE_URL}/admin/products`;
+                await fetchAdminData(url, method, formData);
+                showToast('Lưu sản phẩm thành công!', 'success');
+                closeModal();
+                loadProducts();
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        async function editProduct(id) {
+            try {
+                const productResult = await fetchAdminData(`${BASE_URL}/admin/products/${id}`);
+                const product = productResult.product;
+
+                if (product) {
+                    openModal('editProduct', product);
+                } else {
+                    showToast(`Không tìm thấy dữ liệu sản phẩm chi tiết.`, 'error');
+                }
+            } catch (error) {
+                showToast(`Lỗi tải chi tiết sản phẩm: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+                try {
+                    await fetchAdminData(`${BASE_URL}/admin/products/${id}`, 'DELETE');
+                    showToast('Đã xóa sản phẩm thành công!', 'success');
+                    loadProducts();
+                } catch (error) {
+                    showToast(`Lỗi: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        async function processOrder(id) {
+            const newStatus = prompt("Nhập trạng thái mới (Chờ xác nhận, Đã xác nhận,Đang giao, Đã giao, Đã hủy):");
+            if (!newStatus) return;
+
+            try {
+                const result = await fetchAdminData(`${BASE_URL}/admin/orders/${id}/status`, 'PUT', { status: newStatus });
+                showToast('Đơn hàng đã được xử lý!', 'success');
+
+                loadOrders(0);
+                loadDashboardStats();
+                loadCustomers();
+
+            } catch (error) {
+                showToast(`Lỗi: ${error.message}`, 'error');
+            }
+        }
+
+        function viewOrder(orderId) {
+            window.open(`invoice.html?orderId=${orderId}`, '_blank');
+        }
+
+        // Các hàm CRUD Danh mục cơ bản
+        function openCategoryModal(categoryData = {}) {
+            document.getElementById('categoryModal').classList.add('active');
+
+            if (categoryData.name) {
+                // Chế độ Sửa
+                document.getElementById('modalCategoryId').value = categoryData._id;
+                document.getElementById('modalCategoryName').value = categoryData.name;
+                document.getElementById('modalCategoryDescription').value = categoryData.description || '';
+                document.getElementById('modalCategoryKey').value = categoryData.key || ''; // <-- BỔ SUNG KEY
+                document.getElementById('categoryModalTitle').textContent = 'Chỉnh sửa danh mục';
+                document.getElementById('btnSaveCategory').textContent = 'Cập nhật danh mục';
+            } else {
+                // Chế độ Thêm mới
+                document.getElementById('modalCategoryId').value = '';
+                document.getElementById('modalCategoryKey').value = ''; // <-- RESET KEY
+                document.getElementById('categoryModalTitle').textContent = 'Thêm danh mục mới';
+                document.getElementById('btnSaveCategory').textContent = 'Lưu danh mục';
+                document.querySelector('#categoryModal form').reset();
+            }
+        }
+
+        function slugify(str) {
+            str = str.toLowerCase().trim();
+            str = str.replace(/á|à|ả|ã|ạ/g, 'a');
+            str = str.replace(/é|è|ẻ|ẽ|ẹ/g, 'e');
+            str = str.replace(/í|ì|ỉ|ĩ|ị/g, 'i');
+            str = str.replace(/ó|ò|ỏ|õ|ọ/g, 'o');
+            str = str.replace(/ú|ù|ủ|ũ|ụ/g, 'u');
+            str = str.replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y');
+            str = str.replace(/đ/g, 'd');
+            str = str.replace(/[^a-z0-9\s-]/g, '');
+            str = str.replace(/[\s-]+/g, '-');
+            return str;
+        }
+
+        async function saveCategory(e) {
+            e.preventDefault();
+            const id = document.getElementById('modalCategoryId').value;
+            const name = document.getElementById('modalCategoryName').value;
+            const description = document.getElementById('modalCategoryDescription').value;
+            let categoryKey = document.getElementById('modalCategoryKey').value;
+
+            // Kiểm tra và tạo key mới (cho db đồng bộ)
+            if (!id || !categoryKey) {
+                categoryKey = slugify(name);
+            }
+
+            const data = {
+                name,
+                description,
+                key: categoryKey
+            };
+
+            try {
+                const method = id ? 'PUT' : 'POST';
+                const actionText = id ? 'Cập nhật' : 'Thêm';
+                const url = id ? `${BASE_URL}/admin/categories/${id}` : `${BASE_URL}/admin/categories`;
+
+                await fetchAdminData(url, method, data);
+
+                showToast(`${actionText} danh mục ${name} thành công!`, 'success');
+
+                closeModal();
+
+                await loadCategories();
+
+            } catch (err) {
+                showToast(err.message || `Lỗi khi ${actionText.toLowerCase()} danh mục!`, 'error');
+            }
+        }
+
+        async function editCategory(id) {
+            try {
+                const result = await fetchAdminData(`${BASE_URL}/admin/categories/${id}`);
+
+                const category = result.category;
+
+                if (category) {
+                    openCategoryModal(category);
+                } else {
+                    showToast(`Không tìm thấy dữ liệu danh mục chi tiết.`, 'error');
+                }
+            } catch (error) {
+                showToast(`Lỗi tải chi tiết danh mục: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteCategory(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa danh mục này? Thao tác này không thể hoàn tác.')) {
+                try {
+                    await fetchAdminData(`${BASE_URL}/admin/categories/${id}`, 'DELETE');
+
+                    showToast('Đã xóa danh mục thành công!', 'success');
+                    await loadCategories();
+
+                } catch (error) {
+                    showToast(`Lỗi khi xóa danh mục: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.menu-item[onclick*="${sectionId}"]`)?.classList.add('active');
+
+            if (sectionId === 'dashboard') loadDashboardStats();
+            if (sectionId === 'products') loadProducts();
+            if (sectionId === 'orders') loadOrders(0);
+            if (sectionId === 'customers') loadCustomers();
+            if (sectionId === 'categories') loadCategories();
+
+        }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById("logoutMenu");
+            menu.classList.toggle("active");
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastMessage.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+
+        function animateValue(id, start, end, duration) {
+            const element = document.getElementById(id);
+            if (!element) return;
+            const isPercent = element.textContent.includes('%');
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+
+                    clearInterval(timer);
+                }
+                element.textContent = isPercent ?
+                    current.toFixed(1) + '%' :
+                    current.toLocaleString('vi-VN');
+            }, 16);
+        }
+
+        async function loadSettings() {
+            try {
+                const response = await fetchAdminData(`${BASE_URL}/admin/settings`, 'GET');
+                const settings = response.settings;
+
+                if (!settings) return;
+                // --- Cập nhật Form 1: Thông tin cửa hàng ---
+                document.getElementById('shopName').value = settings.shopName || '';
+                document.getElementById('shopEmail').value = settings.shopEmail || '';
+                document.getElementById('shopPhone').value = settings.shopPhone || '';
+                document.getElementById('shopAddress').value = settings.shopAddress || '';
+                document.getElementById('shopDescription').value = settings.shopDescription || '';
+
+                // --- Cập nhật Form 2: Thanh toán ---
+                document.getElementById('paymentCod').checked = settings.payment.paymentCod || false;
+                document.getElementById('paymentBank').checked = settings.payment.paymentBank || false;
+                document.getElementById('paymentEwallet').checked = settings.payment.paymentEwallet || false;
+                document.getElementById('paymentCard').checked = settings.payment.paymentCard || false;
+                document.getElementById('bankAccount').value = settings.payment.bankAccount || '';
+
+                const bankSelect = document.getElementById('bankName');
+                if (bankSelect) bankSelect.value = settings.payment.bankName || 'Vietcombank';
+
+
+                document.getElementById('shipGhn').checked = settings.shipping.shipGhn || false;
+                document.getElementById('shipGhtk').checked = settings.shipping.shipGhtk || false;
+                document.getElementById('shipVnpost').checked = settings.shipping.shipVnpost || false;
+                document.getElementById('shipJt').checked = settings.shipping.shipJt || false;
+                document.getElementById('defaultShippingFee').value = settings.shipping.defaultShippingFee || 0;
+                document.getElementById('freeShippingMin').value = settings.shipping.freeShippingMin || 0;
+
+            } catch (error) {
+                console.error('Lỗi khi tải cài đặt ban đầu:', error);
+            }
+        }
+
+        function getSafeNumber(id, defaultValue = 0) {
+            const value = document.getElementById(id).value;
+            return value ? Number(value) : defaultValue;
+        }
+
+        function getSafeBoolean(id) {
+            return document.getElementById(id).checked;
+        }
+
+        async function saveSettings(e) {
+            e.preventDefault();
+
+            const data = {
+                shopName: document.getElementById('shopName').value.trim() || '',
+                shopEmail: document.getElementById('shopEmail').value.trim() || '',
+                shopPhone: document.getElementById('shopPhone').value.trim() || '',
+                shopAddress: document.getElementById('shopAddress').value.trim() || '',
+                shopDescription: document.getElementById('shopDescription').value.trim() || '',
+            };
+
+            if (!data.shopName || !data.shopEmail || !data.shopPhone || !data.shopAddress) {
+                showToast('Vui lòng điền đầy đủ các trường bắt buộc!', 'warning');
+                return;
+            }
+
+            try {
+                await fetchAdminData(`${BASE_URL}/admin/settings`, 'PUT', data);
+
+                showToast('Lưu thông tin cửa hàng thành công!', 'success');
+
+                await loadSettings();
+
+            } catch (error) {
+                showToast(`Lỗi khi lưu thông tin: ${error.message}`, 'error');
+            }
+        }
+
+        // --- Thanh toán ---
+        async function savePaymentSettings(e) {
+            e.preventDefault();
+
+            const data = {
+                paymentCod: getSafeBoolean('paymentCod'),
+                paymentBank: getSafeBoolean('paymentBank'),
+                paymentEwallet: getSafeBoolean('paymentEwallet'),
+                paymentCard: getSafeBoolean('paymentCard'),
+                bankAccount: document.getElementById('bankAccount').value.trim() || '',
+                bankName: document.getElementById('bankName').value.trim() || '',
+            };
+
+            if (!data.bankAccount || !data.bankName) {
+                showToast('Vui lòng điền đầy đủ thông tin tài khoản ngân hàng!', 'warning');
+                return;
+            }
+
+            try {
+                await fetchAdminData(`${BASE_URL}/admin/settings`, 'PUT', data);
+                showToast('Lưu cài đặt thanh toán thành công!', 'success');
+                await loadSettings();
+            } catch (error) {
+                showToast(`Lỗi khi lưu thanh toán: ${error.message}`, 'error');
+            }
+        }
+
+        // --- Vận chuyển ---
+        async function saveShippingSettings(e) {
+            e.preventDefault();
+
+            const data = {
+                shipGhn: getSafeBoolean('shipGhn'),
+                shipGhtk: getSafeBoolean('shipGhtk'),
+                shipVnpost: getSafeBoolean('shipVnpost'),
+                shipJt: getSafeBoolean('shipJt'),
+                defaultShippingFee: getSafeNumber('defaultShippingFee', 30000),
+                freeShippingMin: getSafeNumber('freeShippingMin', 500000),
+            };
+
+            if (data.defaultShippingFee <= 0 || data.freeShippingMin <= 0) {
+                showToast('Phí vận chuyển và giới hạn miễn phí phải lớn hơn 0!', 'warning');
+                return;
+            }
+
+            try {
+                await fetchAdminData(`${BASE_URL}/admin/settings`, 'PUT', data);
+                showToast('Lưu cài đặt vận chuyển thành công!', 'success');
+                await loadSettings();
+            } catch (error) {
+                showToast(`Lỗi khi lưu vận chuyển: ${error.message}`, 'error');
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('userToken');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userRole');
+
+            showToast('Đã đăng xuất thành công!', 'success');
+
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 500);
+        }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById("logoutMenu");
+            menu.classList.toggle("active");
+
+            if (menu.classList.contains("active")) {
+                menu.onclick = function (e) {
+                    e.stopPropagation();
+                    logoutAdmin();
+                };
+            } else {
+                menu.onclick = null;
+            }
+        }
+
+        document.addEventListener('click', function (e) {
+            const menu = document.getElementById("logoutMenu");
+            const profile = document.querySelector('.user-profile');
+
+            if (!profile.contains(e.target)) {
+                menu.classList.remove("active");
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userRole = localStorage.getItem('userRole');
+            if (userRole !== 'admin') {
+                window.location.replace('index.html');
+                return;
+            }
+
+            const adminName = localStorage.getItem('userName');
+            const adminRole = localStorage.getItem('userRole');
+            if (adminName) {
+                document.getElementById('adminName').textContent = adminName;
+                document.getElementById('adminRole').textContent = adminRole.charAt(0).toUpperCase() + adminRole.slice(1);
+                document.getElementById('adminAvatar').textContent = adminName.substring(0, 2).toUpperCase();
+            }
+
+
+            loadDashboardStats();
+            loadOrders(3);
+            loadSettings();
+
+            animateValue('impValue', 1563, 2000, 1000);
+            animateValue('goalValue', 30564, 35000, 1000);
+            animateValue('impactValue', 42.6, 50.0, 1000);
+            const sortSelect = document.getElementById('productSortSelect');
+            if (sortSelect) {
+                sortSelect.addEventListener('change', loadProducts);
+            }
+
+            window.onclick = function (event) {
+                const modal = document.getElementById('productModal');
+                if (event.target === modal) {
+                    closeModal();
+                }
+            }
+        });
+
+        const ctx = document.getElementById('dealsChart').getContext('2d');
+        let dealsChart;
+
+        const chartData = {
+            daily: [12, 19, 15, 25, 22, 30, 28, 35, 32, 40, 38, 45],
+            weekly: [180, 220, 200, 280, 260, 320, 380, 420, 400, 480, 460, 520],
+            monthly: [2400, 2800, 2600, 3200, 3000, 3800, 4200, 4800, 4600, 5200, 5000, 5800]
+        };
+
+        function updateChart(type) {
+            if (dealsChart) dealsChart.destroy();
+
+            dealsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: type === 'daily' ? ['1', '3', '5', '7', '9', '11', '13', '15', '17', '19', '21', '23'] :
+                        type === 'weekly' ? ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'] :
+                            ['Th1', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7', 'Th8', 'Th9', 'Th10', 'Th11', 'Th12'],
+                    datasets: [{
+                        label: 'Doanh số',
+                        data: chartData[type],
+                        borderColor: '#ff6b00',
+                        backgroundColor: 'rgba(255, 107, 0, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#ff6b00',
+                        pointBorderWidth: 3,
+                        pointRadius: 6,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: false, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Mặc định hiện Weekly
+        updateChart('weekly');
+
+        // Sửa 3 nút chuyển đổi
+        document.querySelectorAll('.control-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.control-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                updateChart(btn.textContent.toLowerCase());
+            });
+        });
+    </script>
+</body>
+
+</html>
