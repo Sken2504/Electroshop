@@ -9,4 +9,4 @@ B1: Git clone - https://github.com/Sken2504/Electroshop-ecommerce
 B2: Tải các dependencies cần thiết - npm install
 B3: Chạy dự án - node src/server.js
 
-Người phát triển: Văn Hữu Lộc, Phạm Ngọc Diễm My, Nguyễn Huỳnh Tường Vi
+Phát triển bởi: Văn Hữu Lộc, Phạm Ngọc Diễm My, Nguyễn Huỳnh Tường Vi
