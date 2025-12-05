@@ -3,11 +3,6 @@ const mongoose = require('mongoose');
 const Product = require('./src/models/Productmodel'); 
 const productsData = require('./src/data/productData'); 
 
-if (!process.env.MONGO_URI) {
-    console.error('❌ Vui lòng cung cấp MONGO_URI trong file .env');
-    process.exit(1);
-}
-
 const importData = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI); 

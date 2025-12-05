@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const jwtConfig = require('../config/jwtconfig');
 
-
 const JWT_SECRET = 'YOUR_SECRET_KEY';
 
 exports.registerUser = async (name, email, phone, password) => {

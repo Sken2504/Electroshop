@@ -64,21 +64,18 @@ exports.createVnPayUrl = (orderId, amount, ipAddr) => {
         vnp_OrderInfo: `Thanh toan don hang ${orderId}`,  // Raw space
         vnp_OrderType: 'billpayment',
         vnp_Amount: Math.round(parseFloat(amount)) * 100,
-        vnp_ReturnUrl: VNPAY_RETURN_URL,  // Raw full URL
+        vnp_ReturnUrl: VNPAY_RETURN_URL, 
         vnp_IpAddr: ipAddr || '127.0.0.1',
         vnp_CreateDate: createDate,
         vnp_ExpireDate: expireDate
     };
 
-    // Sort keys alphabet
     vnp_Params = sortObject(vnp_Params);
 
-    // Tạo signData: Manual build để encode đúng (space → +, URL → %3A%2F%2F, IP raw)
     let signDataArray = [];
     for (let key in vnp_Params) {
         if (vnp_Params[key] !== null && vnp_Params[key] !== undefined && vnp_Params[key] !== '') {
             let value = vnp_Params[key].toString();
-            // Encode value theo chuẩn VNPAY: encodeURIComponent nhưng space → + (không %20)
             let encodedValue = encodeURIComponent(value).replace(/%20/g, '+');
             signDataArray.push(`${key}=${encodedValue}`);
         }
@@ -86,12 +83,10 @@ exports.createVnPayUrl = (orderId, amount, ipAddr) => {
     const signData = signDataArray.join('&');
     console.log('VNPAY DEBUG - signData (ENCODED +):', signData);  // Sẽ có + cho space
 
-    // Hash SHA512
     const hmac = crypto.createHmac('sha512', VNPAY_HASH_SECRET);
     const vnp_SecureHash = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
     console.log('VNPAY DEBUG - vnp_SecureHash:', vnp_SecureHash);
 
-    // Tạo URL: Dùng querystring {encode: false} nhưng params đã encode value (sẽ thành + trong URL)
     vnp_Params.vnp_SecureHash = vnp_SecureHash;
     const queryString = querystring.stringify(vnp_Params, { encode: false });
     const paymentUrl = VNPAY_URL + '?' + queryString;

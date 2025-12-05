@@ -12,15 +12,15 @@ exports.getMe = async (req, res) => {
 
 exports.updateMe = async (req, res) => {
     try {
-        const { name, phone, dob, gender } = req.body; 
+        const { name, phone, dob, gender } = req.body;
 
         const updatedUser = await userService.updateProfile(req.user._id, {
             name, phone, dob, gender
         });
 
-        res.status(200).json({ 
+        res.status(200).json({
             message: 'Thông tin đã được cập nhật!',
-            user: updatedUser 
+            user: updatedUser
         });
     } catch (error) {
         res.status(400).json({ message: 'Cập nhật thất bại: ' + error.message });
@@ -29,15 +29,12 @@ exports.updateMe = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
     try {
-        const { currentPassword, newPassword } = req.body; 
-
+        const { currentPassword, newPassword } = req.body;
         if (!currentPassword || !newPassword || newPassword.length < 6) {
             return res.status(400).json({ message: 'Mật khẩu mới phải từ 6 ký tự trở lên.' });
         }
-
         await userService.changePassword(req.user._id, currentPassword, newPassword);
-
-        res.status(200).json({ 
+        res.status(200).json({
             message: 'Đổi mật khẩu thành công! Vui lòng đăng nhập lại.',
         });
     } catch (error) {
@@ -49,7 +46,6 @@ exports.getWishlist = async (req, res) => {
     try {
         const userId = req.user._id;
         const wishlist = await wishlistService.getWishlistByUserId(userId);
-        
         res.status(200).json({ wishlist });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi khi lấy danh sách yêu thích.' });
@@ -60,18 +56,50 @@ exports.toggleWishlist = async (req, res) => {
     try {
         const userId = req.user._id;
         const { productId } = req.body;
-        
+
         if (!productId) {
             return res.status(400).json({ message: 'Thiếu ID sản phẩm.' });
         }
-
         const result = await wishlistService.toggleWishlist(userId, productId);
-        
-        res.status(200).json({ 
+        res.status(200).json({
             message: 'Cập nhật danh sách yêu thích thành công.',
             action: result.action
         });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi khi cập nhật danh sách yêu thích.' });
+    }
+};
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ message: 'Vui lòng nhập email.' });
+        }
+        const { user, resetToken } = await userService.createPasswordResetToken(email);
+        userService.sendPasswordResetEmail(user, resetToken);
+        res.status(200).json({
+            message: 'Đã gửi link đặt lại mật khẩu qua email. Vui lòng kiểm tra hộp thư của bạn.'
+        });
+    } catch (error) {
+        console.error(error.message);
+        res.status(200).json({
+            message: 'Đã gửi link đặt lại mật khẩu qua email. Vui lòng kiểm tra hộp thư của bạn.'
+        });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { email, token, newPassword } = req.body;
+        if (!email || !token || !newPassword || newPassword.length < 6) {
+            return res.status(400).json({ message: 'Dữ liệu không hợp lệ.' });
+        }
+        await userService.resetPassword(email, token, newPassword);
+        res.status(200).json({
+            message: 'Đặt lại mật khẩu thành công. Vui lòng đăng nhập với mật khẩu mới.'
+        });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
 };

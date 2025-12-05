@@ -19,20 +19,19 @@ const ShippingSchema = new mongoose.Schema({
 });
 
 const SettingSchema = new mongoose.Schema({
-    // --- Thông tin cửa hàng (Form 1) ---
+    // --- Thông tin cửa hàng  ---
     shopName: { type: String, default: 'ElectroShop' },
     shopEmail: { type: String, default: 'support@electroshop.vn' },
-    shopPhone: { type: String, default: '1900.xxxx' },
+    shopPhone: { type: String, default: '0123456789' },
     shopAddress: { type: String, default: '123 Nguyễn Huệ, Q.1, TP.HCM' },
     shopDescription: { type: String, default: 'ElectroShop - Cửa hàng điện tử uy tín hàng đầu Việt Nam' },
     
-    // --- Cài đặt Thanh toán (Form 2) ---
+    // --- Thanh toán ---
     payment: { type: PaymentSchema, default: () => ({}) },
     
-    // --- Cài đặt Vận chuyển (Form 3) ---
+    // --- Vận chuyển ---
     shipping: { type: ShippingSchema, default: () => ({}) },
 
-    // Dùng ID cố định để chỉ có 1 document
     settingId: { type: String, default: 'GLOBAL_CONFIG', unique: true } 
 }, { timestamps: true });
 

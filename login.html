@@ -468,7 +468,7 @@
                             <input type="checkbox">
                             <span>Ghi nhớ đăng nhập</span>
                         </label>
-                        <a href="#" class="forgot-password">Quên mật khẩu?</a>
+                        <a href="#" class="forgot-password" onclick="switchFormToForgot(event)">Quên mật khẩu?</a>
                     </div>
 
                     <button type="submit" class="btn-submit">Đăng nhập</button>
@@ -549,6 +549,8 @@
                     <button type="submit" class="btn-submit">Đăng ký</button>
                 </form>
 
+
+
                 <div class="divider">Hoặc đăng ký với</div>
 
                 <div class="social-login">
@@ -562,6 +564,32 @@
 
                 <div class="form-footer">
                     Đã có tài khoản? <a href="#" onclick="switchTab('login')">Đăng nhập</a>
+                </div>
+            </div>
+
+            <div id="forgot-form" class="form-content">
+                <form onsubmit="handleForgotPassword(event)">
+                    <div class="form-header" style="margin-bottom: 30px;">
+                        <h2 class="form-title" style="font-size: 28px;">Quên Mật Khẩu? 🔑</h2>
+                        <p class="form-subtitle">Nhập email đã đăng ký để nhận link đặt lại mật khẩu.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email đã đăng ký</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input type="email" class="form-input" id="forgotEmailInput" placeholder="example@gmail.com"
+                                required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" style="margin-top: 15px;">
+                        Gửi Link Đặt Lại
+                    </button>
+                </form>
+
+                <div class="form-footer" style="margin-top: 20px;">
+                    <a href="#" onclick="switchTab('login', event)">← Quay lại Đăng nhập</a>
                 </div>
             </div>
         </div>
@@ -590,15 +618,25 @@
         }
 
         function switchTab(tabName) {
+            // Loại bỏ event.target.classList.add('active') và tìm nút bằng tên
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
+
+                // Logic để tìm và thêm class 'active' nếu hàm được gọi để chuyển tab Đăng nhập/Đăng ký
+                if (tabName === 'login' && btn.textContent.includes('Đăng nhập')) {
+                    btn.classList.add('active');
+                } else if (tabName === 'register' && btn.textContent.includes('Đăng ký')) {
+                    btn.classList.add('active');
+                }
             });
-            event.target.classList.add('active');
 
             document.querySelectorAll('.form-content').forEach(content => {
                 content.classList.remove('active');
             });
             document.getElementById(tabName + '-form').classList.add('active');
+
+            // Cập nhật URL (Tùy chọn)
+            window.history.pushState({}, '', 'login.html#' + tabName);
         }
 
         function togglePassword(inputId) {
@@ -612,6 +650,22 @@
                 input.type = 'password';
                 button.textContent = '👁️';
             }
+        }
+
+       function switchFormToForgot(event) {
+            event.preventDefault();
+            
+            // Tắt active của tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.querySelectorAll('.form-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('forgot-form').classList.add('active');
+            
+            window.history.pushState({}, '', 'login.html#forgot');
         }
 
         async function handleLogin(event) {
@@ -668,6 +722,35 @@
             }
         }
 
+        // ... (các hàm hiện có)
+
+        async function handleForgotPassword(event) {
+            event.preventDefault();
+
+            // Lấy email từ ô input mới có ID là 'forgotEmailInput'
+            const emailInput = document.getElementById('forgotEmailInput');
+            const email = emailInput ? emailInput.value : '';
+
+            if (!email || !email.includes('@')) {
+                alert('Vui lòng nhập địa chỉ email hợp lệ.');
+                return;
+            }
+
+            try {
+                // GỌI API VÀ CHỜ KẾT QUẢ
+                const result = await postData(`${BASE_URL}/auth/forgot-password`, { email });
+
+                // --- CHỈ GỌI ALERT THÔNG BÁO THÀNH CÔNG TẠI ĐÂY ---
+                alert('✅ ' + result.message);
+
+                // Chuyển về trang đăng nhập sau khi gửi link
+                emailInput.value = '';
+                switchTab('login'); // Chuyển về tab Đăng nhập
+
+            } catch (error) {
+            }
+        }
+
         function loginWithGoogle() {
             alert('🔵 Đăng nhập với Google (Tính năng đang phát triển)');
         }
@@ -677,4 +760,5 @@
         }
     </script>
 </body>
+
 </html>
